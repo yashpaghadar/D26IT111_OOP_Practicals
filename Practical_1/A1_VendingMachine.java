@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class VendingMachine {
+public class A1_VendingMachine {
     // declare coins
     enum Coins {
         ONE, TWO, FIVE, TEN

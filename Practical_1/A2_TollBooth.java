@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class TollBooth {
+public class A2_TollBooth {
     record Vehicle(String number, String type) {
     }
 

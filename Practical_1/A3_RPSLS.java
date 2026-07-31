@@ -2,7 +2,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.random.*;
 
-public class RPSLS {
+public class A3_RPSLS {
     enum Move {
         ROCK, PAPER, SCISSORS,
         LIZARD, SPOCK
