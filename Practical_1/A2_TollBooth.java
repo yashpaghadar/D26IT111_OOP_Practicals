@@ -6,7 +6,7 @@ public class A2_TollBooth {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int Total = 0, bike = 0, truck = 0, car = 0;
+        int Total=0, bike = 0, truck = 0, car = 0;
         System.out.println("ENTER VEHICLE (Type 'done' for STOP):");
 
         while (true) {
