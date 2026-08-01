@@ -1,6 +1,6 @@
 package Practical_2;
 
-public class ParkingLot {
+public class A3_ParkingLot {
     private int twoWheelers;
     private int fourWheelers;
     private final int twoCap;
@@ -9,7 +9,7 @@ public class ParkingLot {
     private static long revenue = 0;
 
     // Constructor
-    public ParkingLot(int twoCap, int fourCap) {
+    public A3_ParkingLot(int twoCap, int fourCap) {
         this.twoCap = twoCap;
         this.fourCap = fourCap;
         this.twoWheelers = 0;
@@ -74,7 +74,7 @@ public class ParkingLot {
     // Main method
     public static void main(String[] args) {
 
-        ParkingLot lot = new ParkingLot(3, 2);
+        A3_ParkingLot lot = new A3_ParkingLot(3, 2);
 
         lot.park("two");
         lot.park("two");
@@ -93,6 +93,6 @@ public class ParkingLot {
         System.out.println("Two-Wheelers : " + lot.getTwoWheelers());
         System.out.println("Four-Wheelers: " + lot.getFourWheelers());
 
-        System.out.println("Revenue: $" + ParkingLot.getRevenue());
+        System.out.println("Revenue: $" + A3_ParkingLot.getRevenue());
     }
 }

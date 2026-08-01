@@ -1,6 +1,6 @@
 package Practical_2;
 
-public class Thermostat {
+public class A1_Thermostat {
 
     private String location;
     private int temperature;
@@ -11,7 +11,7 @@ public class Thermostat {
     private static int activeCount = 0;
 
     // Constructor with location and starting temperature
-    public Thermostat(String location, int startTemp) {
+    public A1_Thermostat(String location, int startTemp) {
         this.location = location;
 
         if (startTemp >= MIN && startTemp <= MAX) {
@@ -24,7 +24,7 @@ public class Thermostat {
     }
 
     // Constructor with only location (Constructor Chaining)
-    public Thermostat(String location) {
+    public A1_Thermostat(String location) {
         this(location, 22);
     }
 
@@ -59,8 +59,8 @@ public class Thermostat {
     // Main method
     public static void main(String[] args) {
 
-        Thermostat t1 = new Thermostat("Bedroom");
-        Thermostat t2 = new Thermostat("Hall", 25);
+        A1_Thermostat t1 = new A1_Thermostat("Bedroom");
+        A1_Thermostat t2 = new A1_Thermostat("Hall", 25);
 
         System.out.println("Initial Temperature: " + t1.getTemperature());
 
@@ -76,6 +76,6 @@ public class Thermostat {
             System.out.println("Temperature: " + t1.getTemperature());
         }
 
-        System.out.println("\nActive Thermostats: " + Thermostat.getActiveCount());
+        System.out.println("\nActive Thermostats: " + A1_Thermostat.getActiveCount());
     }
 }

@@ -1,6 +1,6 @@
 package Practical_2;
 
-public class CinemaShow {
+public class A2_CinemaShow {
 
     private String title;
     private int seatsAvailable;
@@ -8,14 +8,14 @@ public class CinemaShow {
     private static int totalBooked = 0;
 
     // Constructor with title and capacity
-    public CinemaShow(String title, int capacity) {
+    public A2_CinemaShow(String title, int capacity) {
         this.title = title;
         this.capacity = capacity;
         this.seatsAvailable = capacity;
     }
 
     // Constructor with default capacity (Constructor Chaining)
-    public CinemaShow(String title) {
+    public A2_CinemaShow(String title) {
         this(title, 100);
     }
 
@@ -51,7 +51,7 @@ public class CinemaShow {
     // Main method
     public static void main(String[] args) {
 
-        CinemaShow show = new CinemaShow("Avengers", 50);
+        A2_CinemaShow show = new A2_CinemaShow("Avengers", 50);
 
         System.out.println("Available Seats: " + show.getSeatsAvailable());
 
@@ -68,6 +68,6 @@ public class CinemaShow {
 
         System.out.println("\nBooking 20 seats: " + show.book(20));
         System.out.println("Seats Available: " + show.getSeatsAvailable());
-        System.out.println("\nTotal Booked Seats: " + CinemaShow.getTotalBooked());
+        System.out.println("\nTotal Booked Seats: " + A2_CinemaShow.getTotalBooked());
     }
 }
