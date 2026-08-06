@@ -2,7 +2,6 @@ package Practical_3;
 import java.util.Objects;
 
 public class Card {
-
     private String rank;
     private String suit;
 
@@ -18,18 +17,13 @@ public class Card {
         return rank + " of " + suit;
     }
 
-    // Override equals()
     @Override
     public boolean equals(Object obj) {
-
         if (this == obj)
             return true;
-
         if (obj == null || getClass() != obj.getClass())
             return false;
-
         Card other = (Card) obj;
-
         return rank.equals(other.rank) && suit.equals(other.suit);
     }
 
