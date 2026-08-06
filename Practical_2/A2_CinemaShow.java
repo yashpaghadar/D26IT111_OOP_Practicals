@@ -36,6 +36,9 @@ public class A2_CinemaShow {
         if (seatsAvailable > capacity) {
             seatsAvailable = capacity;
         }
+        if (totalBooked > 0 && totalBooked > n){
+            totalBooked -= n;
+        }
     }
 
     // Getter for available seats
@@ -51,23 +54,31 @@ public class A2_CinemaShow {
     // Main method
     public static void main(String[] args) {
 
-        A2_CinemaShow show = new A2_CinemaShow("Avengers", 50);
+        A2_CinemaShow C1 = new A2_CinemaShow("Avengers", 50);
+        System.out.println("Cinema 1: "+C1.title);
+        System.out.println("Available Seats: " + C1.getSeatsAvailable());
+        System.out.println("\nBooking 20 seats: " + C1.book(20));
+        System.out.println("Seats Available: " + C1.getSeatsAvailable());
+        System.out.println("\nBooking 15 seats: "  + C1.book(15));
+        System.out.println("Seats Available: "+ C1.getSeatsAvailable());
+        System.out.println("\nBooking 20 seats : " + C1.book(20));
+        System.out.println("Seats Available: "+ C1.getSeatsAvailable());
+        System.out.println("\nCancel 10 seats. ");
+        C1.cancel(10);
+        System.out.println("Seats Available: " + C1.getSeatsAvailable());
+        System.out.println("\nBooking 20 seats: "+ C1.book(20));
+        System.out.println("Seats Available: " + C1.getSeatsAvailable());
 
-        System.out.println("Available Seats: " + show.getSeatsAvailable());
+        A2_CinemaShow C2 = new A2_CinemaShow("Spiderman");
+        System.out.println("------------------------\nCinema 2: "+C2.title);
+        System.out.println("Available Seats: " + C2.getSeatsAvailable());
+        System.out.println("\nBooking 20 seats: "+ C2.book(20));
+        System.out.println("Seats Available: " + C2.getSeatsAvailable());
+        System.out.println("\nCancel 10 seats. ");
+        C2.cancel(10);
+        System.out.println("Seats Available: " + C2.getSeatsAvailable());
+        System.out.println("\nTotal Booked Seats form all Cinema: " + A2_CinemaShow.getTotalBooked());
 
-        System.out.println("\nBooking 20 seats: " + show.book(20));
-        System.out.println("Seats Available: " + show.getSeatsAvailable());
-        System.out.println("\nBooking 15 seats: " + show.book(15));
-        System.out.println("Seats Available: " + show.getSeatsAvailable());
-        System.out.println("\nBooking 20 seats: " + show.book(20));
-        System.out.println("Seats Available: " + show.getSeatsAvailable());
-
-        System.out.println("\nCancel 10 seats");
-        show.cancel(10);
-        System.out.println("Seats Available: " + show.getSeatsAvailable());
-
-        System.out.println("\nBooking 20 seats: " + show.book(20));
-        System.out.println("Seats Available: " + show.getSeatsAvailable());
-        System.out.println("\nTotal Booked Seats: " + A2_CinemaShow.getTotalBooked());
+        
     }
 }
