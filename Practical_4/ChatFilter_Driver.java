@@ -18,7 +18,6 @@ public class ChatFilter_Driver {
         StringBuilder report = new StringBuilder();
 
         for (String line : logs) {
-
             // Split into time, user, message
             String[] parts = line.split(" ", 3);
             // Skip malformed line

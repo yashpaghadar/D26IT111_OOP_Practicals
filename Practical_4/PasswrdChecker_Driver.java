@@ -1,7 +1,6 @@
 package Practical_4;
 
 public class PasswrdChecker_Driver {
-
     public static void main(String[] args) {
 
         String[] passwords = {
