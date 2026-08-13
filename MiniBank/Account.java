@@ -1,5 +1,7 @@
 package MiniBank;
 
+import java.util.Objects;
+
 public class Account {
     private final String accountNumber;
     private String ownerName;
@@ -24,15 +26,15 @@ public class Account {
         this(ownerName, 0);
     }
 
-    // Deposit 
-    public void Deposit(long amount){
-        if (amount > 0){
+    // Deposit
+    public void Deposit(long amount) {
+        if (amount > 0) {
             balance += amount;
         }
     }
 
     // Withdraw
-    public boolean Withdraw(long amount){
+    public boolean Withdraw(long amount) {
         if (amount <= balance) {
             balance -= amount;
             return true;
@@ -55,5 +57,31 @@ public class Account {
 
     public boolean isActive() {
         return active;
+    }
+
+    // toString()
+    public String toString() {
+        return "Account Number: " + accountNumber
+                + ", Owner Name: " + ownerName
+                + ", Balance: " + balance;
+    }
+
+    // equals()
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof Account)) {
+            return false;
+        }
+
+        Account other = (Account) o;
+        return accountNumber.equals(other.accountNumber);
+    }
+
+    // hashCode()
+    public int hashCode() {
+        return Objects.hash(accountNumber);
     }
 }
