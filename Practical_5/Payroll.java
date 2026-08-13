@@ -10,7 +10,6 @@ package Practical_5;
 abstract class Employee {
     String name;
     int id;
-
     Employee(String name, int id) {
         this.name = name;
         this.id = id;
@@ -21,7 +20,6 @@ abstract class Employee {
 
 class FullTime extends Employee {
     private double fixedSalary;
-
     FullTime(String name, int id, double fixedSalary) {
         super(name, id);
         this.fixedSalary = fixedSalary;
@@ -35,7 +33,6 @@ class FullTime extends Employee {
 class PartTime extends Employee {
     private double hours;
     private double rate;
-
     PartTime(String name, int id, double hours, double rate) {
         super(name, id);
         this.hours = hours;
@@ -49,7 +46,6 @@ class PartTime extends Employee {
 
 class Intern extends Employee {
     private double stipend;
-
     Intern(String name, int id, double stipend) {
         super(name, id);
         this.stipend = stipend;
@@ -76,7 +72,8 @@ public class Payroll {
 
         for (Employee employee : employees) {
             double salary = employee.monthlySalary();
-            System.out.println("Name: " + employee.name + ", ID: " + employee.id + ", Salary: " + String.format("%.2f", salary));
+            System.out.println("Name: " + employee.name + ", ID: " + employee.id + 
+                                ", Salary: " + String.format("%.2f", salary));
             if (employee instanceof Intern) {
                 System.out.println("Note => " + employee.name + " is an Intern.\n");
             }

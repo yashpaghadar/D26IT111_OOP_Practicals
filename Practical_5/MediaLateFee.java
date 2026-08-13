@@ -63,7 +63,8 @@ public class MediaLateFee {
         System.out.println("Returned Media Late Fees:");
         for (Media media : returnedMedia) {
             double fee = media.lateFee();
-            System.out.println("Title: " + media.title + " | Late Days: " + media.lateDays + " | Late Fee: " + String.format("%.2f", fee));
+            System.out.println("Title: " + media.title + " | Late Days: " + media.lateDays + 
+                                " | Late Fee: " + String.format("%.2f", fee));
             totalFee += fee;
         }
 
