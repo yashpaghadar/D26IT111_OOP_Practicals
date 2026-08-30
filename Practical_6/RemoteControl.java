@@ -33,7 +33,6 @@ interface SwitchPolicy {
     boolean maySwitchOn(Switchable device, int hour);
 }
 
-
 public class RemoteControl {
     public static void main(String[] args) {
         // Array of Switchable devices
