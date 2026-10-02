@@ -12,6 +12,7 @@ enum MenuOption {
 }
 
 public class MiniBank {
+
     // Find account using account number
     private static Account findAccount(
             Account[] accounts,
@@ -23,13 +24,17 @@ public class MiniBank {
                 return accounts[i];
             }
         }
+
         return null;
     }
 
     public static void main(String[] args) {
+
         Scanner sc = new Scanner(System.in);
+
         // Bank information
         BankInfo bank = new BankInfo("MiniBank", "Anand Branch");
+
         System.out.println("======================================");
         System.out.println(bank);
         System.out.println("======================================");
@@ -39,90 +44,141 @@ public class MiniBank {
         int accountCount = 0;
         boolean running = true;
 
+        /*
+         * /
+         * // ==========================================
+         * // PRACTICAL 3 TESTING
+         * // ==========================================
+         * 
+         * Account account1 = new SavingsAccount("Yash", 5000, 1000);
+         * Account account2 = new CurrentAccount("Rahul", 10000, 5000);
+         * 
+         * // toString()
+         * System.out.println("\n===== toString() TEST =====");
+         * System.out.println(account1);
+         * System.out.println(account2);
+         * 
+         * // equals()
+         * System.out.println("\n===== equals() TEST =====");
+         * System.out.println("Are account1 and account2 equal? " +
+         * account1.equals(account2));
+         * System.out.println("Are account1 and account1 equal? " +
+         * account1.equals(account1));
+         * 
+         * // instanceof
+         * System.out.println("\n===== instanceof TEST =====");
+         * Object obj = account1;
+         * if (obj instanceof Account) {
+         * System.out.println("obj is an Account object.");
+         * } else {
+         * System.out.println("obj is not an Account object.");
+         * }
+         * 
+         * 
+         * // Customer and Address test
+         * System.out.println("\n===== CUSTOMER TEST =====");
+         * Customer customer = new Customer("Yash", "yash@example.com", "9876543210");
+         * Customer.Address address = new Customer.Address( "CSPIT Campus", "Anand",
+         * "388001");
+         * customer.setAddress(address);
+         * System.out.println("Customer ID : " + customer.getCustomerId());
+         * System.out.println("Name        : " + customer.getName());
+         * System.out.println("Email       : " + customer.getEmail());
+         * System.out.println("Mobile      : " + customer.getMobile());
+         * System.out.println("Address     : " +
+         * customer.getAddress().getFullAddress());
+         * 
+         * // Clone test
+         * Customer clonedCustomer = customer.clone();
+         * System.out.println("\n===== CLONE TEST =====");
+         * System.out.println("Original Customer ID : "+ customer.getCustomerId());
+         * System.out.println("Cloned Customer ID   : "+
+         * clonedCustomer.getCustomerId());
+         * System.out.println("Is clone a different object? " + (customer !=
+         * clonedCustomer));
+         * 
+         * 
+         * // Put test accounts into account array
+         * accounts[accountCount++] = account1;
+         * accounts[accountCount++] = account2;
+         */
+
+        /*
+         * /
+         * // ==========================================
+         * // PRACTICAL 4 TEST
+         * // ==========================================
+         * 
+         * System.out.println("\n========== VALIDATOR TEST ==========");
+         * 
+         * // Mobile
+         * System.out.println("Mobile 9876543210 : "+
+         * Validator.isValidMobile("9876543210"));
+         * System.out.println("Mobile 1234567890 : "+
+         * Validator.isValidMobile("1234567890"));
+         * 
+         * // Email
+         * System.out.println("Email yash@gmail.com : "+
+         * Validator.isValidEmail("yash@gmail.com"));
+         * System.out.println("Email yash@gmail : "+
+         * Validator.isValidEmail("yash@gmail"));
+         * 
+         * // PAN
+         * System.out.println("PAN ABCDE1234F : "+ Validator.isValidPan("ABCDE1234F"));
+         * System.out.println("PAN ABC1234F : " + Validator.isValidPan("ABC1234F"));
+         * 
+         * // IFSC
+         * System.out.println("IFSC SBIN0001234 : " +
+         * Validator.isValidIfsc("SBIN0001234"));
+         * System.out.println("IFSC SBI1234 : " + Validator.isValidIfsc("SBI1234"));
+         * 
+         * // Command test
+         * System.out.println("\n========== COMMAND TEST ==========");
+         * Command command = CommandParser.parse("DEPOSIT AC0001 500");
+         * System.out.println("Transaction Type : " + command.type());
+         * System.out.println("Account Number   : " + command.accountNumber());
+         * System.out.println("Amount           : " + command.amount());
+         * 
+         * // Statement test
+         * System.out.println("\n========== STATEMENT TEST ==========");
+         * Account testAccount = new SavingsAccount("Yash", 1000, 500);
+         * System.out.println(StatementFormatter.buildStatement(testAccount));
+         */
+
         // ==========================================
-        // PRACTICAL 3 TESTING
+        // PRACTICAL 5 TESTING
         // ==========================================
 
-        Account account1 = new Account("Yash", 5000);
-        Account account2 = new Account("Rahul", 10000);
+        // Create three different account types
+        Account savings = new SavingsAccount("Yash", 5000, 1000);
+        Account current = new CurrentAccount("Rahul", 10000, 5000);
+        Account fixedDeposit = new FixedDepositAccount("Jay", 20000);
 
-        // toString()
-        System.out.println("\n===== toString() TEST =====");
-        System.out.println(account1);
-        System.out.println(account2);
-
-        // equals()
-        System.out.println("\n===== equals() TEST =====");
-        System.out.println("Are account1 and account2 equal? " + account1.equals(account2));
-        System.out.println("Are account1 and account1 equal? " + account1.equals(account1));
-
-        // instanceof
-        System.out.println("\n===== instanceof TEST =====");
-        Object obj = account1;
-        if (obj instanceof Account) {
-            System.out.println("obj is an Account object.");
-        } else {
-            System.out.println("obj is not an Account object.");
+        // Account array
+        Account[] accountTypes = { savings, current, fixedDeposit };
+        accounts[accountCount] = savings; accountCount++;
+        accounts[accountCount] = current; accountCount++;
+        accounts[accountCount] = fixedDeposit; accountCount++;
+        // Runtime polymorphism
+        System.out.println("\n===== INTEREST RATE TEST =====");
+        for (Account acc : accountTypes) {
+            System.out.println(acc.getOwnerName() + " -> Interest Rate: " + acc.interestRate() + "%");
         }
 
-        // Customer and Address test
-        System.out.println("\n===== CUSTOMER TEST =====");
-        Customer customer = new Customer("Yash", "yash@example.com", "9876543210");
-        Customer.Address address = new Customer.Address("CSPIT Campus", "Anand", "388001");
-        customer.setAddress(address);
-        System.out.println("Customer ID : " + customer.getCustomerId());
-        System.out.println("Name        : " + customer.getName());
-        System.out.println("Email       : " + customer.getEmail());
-        System.out.println("Mobile      : " + customer.getMobile());
-        System.out.println("Address     : " + customer.getAddress().getFullAddress());
+        // instanceof pattern matching
+        System.out.println("\n===== INSTANCEOF TEST =====");
+        if (savings instanceof SavingsAccount sa) {
+            System.out.println("Savings Account Minimum Balance: " + sa.getMinBalance());
+        }
 
-        // Clone test
-        Customer clonedCustomer = customer.clone();
-        System.out.println("\n===== CLONE TEST =====");
-        System.out.println("Original Customer ID : " + customer.getCustomerId());
-        System.out.println("Cloned Customer ID   : " + clonedCustomer.getCustomerId());
-        System.out.println("Is clone a different object? " + (customer != clonedCustomer));
-        // Put test accounts into account array
-        accounts[accountCount++] = account1;
-        accounts[accountCount++] = account2;
-        
-        // ==========================================
-        // ========== PRACTICAL 4 TEST ==============
-        // ==========================================
-
-        System.out.println("\n========== VALIDATOR TEST ==========");
-
-        // Mobile
-        System.out.println("Mobile 9876543210 : " + Validator.isValidMobile("9876543210"));
-        System.out.println("Mobile 1234567890 : " + Validator.isValidMobile("1234567890"));
-
-        // Email
-        System.out.println("Email yash@gmail.com : " + Validator.isValidEmail("yash@gmail.com"));
-        System.out.println("Email yash@gmail : " + Validator.isValidEmail("yash@gmail"));
-
-        // PAN
-        System.out.println("PAN ABCDE1234F : " + Validator.isValidPan("ABCDE1234F"));
-        System.out.println("PAN ABC1234F : " + Validator.isValidPan("ABC1234F"));
-
-        // IFSC
-        System.out.println("IFSC SBIN0001234 : "+ Validator.isValidIfsc("SBIN0001234"));
-        System.out.println("IFSC SBI1234 : " + Validator.isValidIfsc("SBI1234"));
-
-        // ================= COMMAND TEST =================
-        System.out.println("\n========== COMMAND TEST ==========");
-        Command command = CommandParser.parse("DEPOSIT AC0001 500");
-        System.out.println("Transaction Type : " + command.type());
-        System.out.println("Account Number   : " + command.accountNumber());
-        System.out.println("Amount           : " + command.amount());
-
-        System.out.println("\n========== STATEMENT TEST ==========");
-        accounts[accountCount] = new Account("Yash", 1000);
-        System.out.println(StatementFormatter.buildStatement(accounts[accountCount]));
-        accountCount++;
-
+        // Withdrawal rules
+        System.out.println("\n===== WITHDRAWAL TEST =====");
+        System.out.println("Savings withdraw 3000: " + savings.canWithdraw(3000));
+        System.out.println("Current withdraw 14000: " + current.canWithdraw(14000));
+        System.out.println("Fixed Deposit withdraw 1000: " + fixedDeposit.canWithdraw(1000));
 
         // ==========================================
-        // MiniBank
+        // MiniBank MENU
         // ==========================================
 
         while (running) {
@@ -157,22 +213,44 @@ public class MiniBank {
             switch (option) {
                 // 1. OPEN ACCOUNT
                 case OPEN_ACCOUNT -> {
-                    if (accountCount >= accounts.length) {
-                        System.out.println("Account limit reached!");
+                    if (accountCount >= accounts.length) { 
+                        System.out.println( "Account limit reached!"); 
                         break;
+                    } 
+                    System.out.print( "Enter Owner Name : "); 
+                    String ownerName = sc.nextLine(); 
+                    System.out.print( "Enter Opening Balance : "); 
+                    long openingBalance = sc.nextLong(); sc.nextLine(); 
+                    System.out.println( "\nSelect Account Type:"); 
+                    System.out.println( "1. Savings Account"); 
+                    System.out.println( "2. Current Account"); 
+                    System.out.println( "3. Fixed Deposit Account"); 
+                    System.out.print( "Enter Account Type : "); 
+                    int accountType = sc.nextInt(); 
+                    sc.nextLine(); 
+                    switch (accountType) { 
+                        case 1 -> { 
+                            System.out.print( "Enter Minimum Balance : "); 
+                            long minBalance = sc.nextLong(); sc.nextLine(); 
+                            accounts[accountCount] = new SavingsAccount( ownerName, openingBalance, minBalance);
+                        } 
+                        case 2 -> { 
+                            System.out.print( "Enter Overdraft Limit : "); 
+                            long overdraftLimit = sc.nextLong(); sc.nextLine(); 
+                            accounts[accountCount] = new CurrentAccount( ownerName, openingBalance, overdraftLimit); 
+                        } case 3 -> { 
+                            accounts[accountCount] = new FixedDepositAccount( ownerName, openingBalance); 
+                        } default -> { 
+                            System.out.println( "Invalid Account Type!"); 
+                            break; 
+                        } 
                     }
-
-                    System.out.print("Enter Owner Name : ");
-                    String ownerName = sc.nextLine();
-
-                    System.out.print("Enter Opening Balance : ");
-                    long openingBalance = sc.nextLong();
-                    sc.nextLine();
-
-                    accounts[accountCount] = new Account(ownerName, openingBalance);
-                    System.out.println("\nAccount Created Successfully!");
-                    System.out.println("Account Number : " + accounts[accountCount].getAccountNumber());
-                    accountCount++;
+                         
+                    if (accounts[accountCount] != null) {
+                        System.out.println( "\nAccount Created Successfully!"); 
+                        System.out.println( "Account Number : " + accounts[accountCount].getAccountNumber());
+                        accountCount++; 
+                    } 
                 }
 
                 // 2. DEPOSIT
@@ -255,6 +333,4 @@ public class MiniBank {
                 }
             }
         }
-    }
-
-}
+}}
