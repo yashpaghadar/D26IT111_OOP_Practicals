@@ -1,11 +1,15 @@
 package MiniBank;
+
 import java.util.Scanner;
 
 // Record
-record BankInfo(String name, String branch) { }
+record BankInfo(String name, String branch) {
+}
 
 // Enum
-enum MenuOption {OPEN_ACCOUNT, DEPOSIT, WITHDRAW, TRANSFER, SHOW_DETAILS, EXIT }
+enum MenuOption {
+    OPEN_ACCOUNT, DEPOSIT, WITHDRAW, TRANSFER, SHOW_DETAILS, EXIT
+}
 
 public class MiniBank {
     // Find account using account number
@@ -21,6 +25,7 @@ public class MiniBank {
         }
         return null;
     }
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         // Bank information
@@ -33,7 +38,6 @@ public class MiniBank {
         Account[] accounts = new Account[25];
         int accountCount = 0;
         boolean running = true;
-
 
         // ==========================================
         // PRACTICAL 3 TESTING
@@ -81,12 +85,45 @@ public class MiniBank {
         // Put test accounts into account array
         accounts[accountCount++] = account1;
         accounts[accountCount++] = account2;
+        
+        // ==========================================
+        // ========== PRACTICAL 4 TEST ==============
+        // ==========================================
+
+        System.out.println("\n========== VALIDATOR TEST ==========");
+
+        // Mobile
+        System.out.println("Mobile 9876543210 : " + Validator.isValidMobile("9876543210"));
+        System.out.println("Mobile 1234567890 : " + Validator.isValidMobile("1234567890"));
+
+        // Email
+        System.out.println("Email yash@gmail.com : " + Validator.isValidEmail("yash@gmail.com"));
+        System.out.println("Email yash@gmail : " + Validator.isValidEmail("yash@gmail"));
+
+        // PAN
+        System.out.println("PAN ABCDE1234F : " + Validator.isValidPan("ABCDE1234F"));
+        System.out.println("PAN ABC1234F : " + Validator.isValidPan("ABC1234F"));
+
+        // IFSC
+        System.out.println("IFSC SBIN0001234 : "+ Validator.isValidIfsc("SBIN0001234"));
+        System.out.println("IFSC SBI1234 : " + Validator.isValidIfsc("SBI1234"));
+
+        // ================= COMMAND TEST =================
+        System.out.println("\n========== COMMAND TEST ==========");
+        Command command = CommandParser.parse("DEPOSIT AC0001 500");
+        System.out.println("Transaction Type : " + command.type());
+        System.out.println("Account Number   : " + command.accountNumber());
+        System.out.println("Amount           : " + command.amount());
+
+        System.out.println("\n========== STATEMENT TEST ==========");
+        accounts[accountCount] = new Account("Yash", 1000);
+        System.out.println(StatementFormatter.buildStatement(accounts[accountCount]));
+        accountCount++;
+
 
         // ==========================================
         // MiniBank
         // ==========================================
-
-        
 
         while (running) {
             System.out.println("\n===== MINI BANK MENU =====");
@@ -185,7 +222,7 @@ public class MiniBank {
                     boolean success = account.withdraw(amount);
                     if (success) {
                         System.out.println("Amount Withdrawn Successfully!");
-                        System.out.println("Current Balance : "+ account.getBalance());
+                        System.out.println("Current Balance : " + account.getBalance());
                     } else {
                         System.out.println("Withdrawal Failed! Insufficient Balance.");
                     }
@@ -206,11 +243,7 @@ public class MiniBank {
                     System.out.println("\n===== ACCOUNT DETAILS =====");
                     for (int i = 0; i < accountCount; i++) {
                         Account account = accounts[i];
-                        System.out.println("Account Number : " + account.getAccountNumber());
-                        System.out.println("Owner Name     : " + account.getOwnerName());
-                        System.out.println("Balance        : " + account.getBalance());
-                        System.out.println("Active         : " + account.isActive());
-                        System.out.println("----------------------------");
+                        System.out.println(StatementFormatter.buildStatement(account));
                     }
                     running = false;
                 }
