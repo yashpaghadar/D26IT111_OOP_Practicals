@@ -25,7 +25,6 @@ class Warehouse {
     };
 
     void issue(String item, int qty) throws OutOfStockException, InvalidQuantityException {
-
         if (qty <= 0) {
             throw new InvalidQuantityException("Quantity must be greater than 0.");
         }
@@ -33,6 +32,8 @@ class Warehouse {
         for (int i = 0; i < stock.length; i++) {
             if (stock[i][0].equals(item)) {
                 int available = Integer.parseInt(stock[i][1]);
+
+                
                 if (qty > available) {
                     int shortfall = qty - available;
                     throw new OutOfStockException(shortfall);

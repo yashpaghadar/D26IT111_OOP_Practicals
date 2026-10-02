@@ -1,13 +1,11 @@
 package MiniBank;
 
-public class Customer {
-
+public class Customer implements Cloneable {
     private String name;
     private String email;
     private String mobile;
-
+    private Address address;
     private final String customerId;
-
     private static long customerCounter = 100;
 
     private static String generateCustomerId() {
@@ -22,19 +20,39 @@ public class Customer {
         this.mobile = mobile;
     }
 
-    public String getCustomerId() {
-        return customerId;
+    public String getCustomerId() { return customerId; }
+    public String getName() { return name; }
+    public String getEmail() { return email; }
+    public String getMobile() { return mobile; }
+
+    // ----------- Practical - 3 ----------------
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
-    public String getName() {
-        return name;
+    public Address getAddress() { return address; }
+    public static class Address {
+        private String line;
+        private String city;
+        private String pincode;
+
+        public Address(String line, String city, String pincode) {
+            this.line = line;
+            this.city = city;
+            this.pincode = pincode;
+        }
+        public String getFullAddress(){ return line+", "+city+", "+pincode; }
+        public String getLine() { return line; }
+        public String getCity() { return city; }
+        public String getPincode() { return pincode; }
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getMobile() {
-        return mobile;
+    public Customer clone() {
+        try {
+            return (Customer) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(e);
+        }
     }
 }

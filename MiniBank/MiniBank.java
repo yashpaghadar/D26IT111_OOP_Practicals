@@ -1,41 +1,94 @@
 package MiniBank;
-
 import java.util.Scanner;
 
 // Record
-record BankInfo(String name, String branch) {
-}
+record BankInfo(String name, String branch) { }
 
 // Enum
-enum MenuOption {
-    OPEN_ACCOUNT,
-    DEPOSIT,
-    WITHDRAW,
-    TRANSFER,
-    SHOW_DETAILS,
-    EXIT
-}
+enum MenuOption {OPEN_ACCOUNT, DEPOSIT, WITHDRAW, TRANSFER, SHOW_DETAILS, EXIT }
 
 public class MiniBank {
+    // Find account using account number
+    private static Account findAccount(
+            Account[] accounts,
+            int accountCount,
+            String accountNumber) {
 
+        for (int i = 0; i < accountCount; i++) {
+            if (accounts[i].getAccountNumber().equals(accountNumber)) {
+                return accounts[i];
+            }
+        }
+        return null;
+    }
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         // Bank information
         BankInfo bank = new BankInfo("MiniBank", "Anand Branch");
-
         System.out.println("======================================");
         System.out.println(bank);
         System.out.println("======================================");
 
         // Account array
-        Account[] accounts = new Account[10];
-
-        // Number of accounts currently created
+        Account[] accounts = new Account[25];
         int accountCount = 0;
         boolean running = true;
 
-        while (running) {
 
+        // ==========================================
+        // PRACTICAL 3 TESTING
+        // ==========================================
+
+        Account account1 = new Account("Yash", 5000);
+        Account account2 = new Account("Rahul", 10000);
+
+        // toString()
+        System.out.println("\n===== toString() TEST =====");
+        System.out.println(account1);
+        System.out.println(account2);
+
+        // equals()
+        System.out.println("\n===== equals() TEST =====");
+        System.out.println("Are account1 and account2 equal? " + account1.equals(account2));
+        System.out.println("Are account1 and account1 equal? " + account1.equals(account1));
+
+        // instanceof
+        System.out.println("\n===== instanceof TEST =====");
+        Object obj = account1;
+        if (obj instanceof Account) {
+            System.out.println("obj is an Account object.");
+        } else {
+            System.out.println("obj is not an Account object.");
+        }
+
+        // Customer and Address test
+        System.out.println("\n===== CUSTOMER TEST =====");
+        Customer customer = new Customer("Yash", "yash@example.com", "9876543210");
+        Customer.Address address = new Customer.Address("CSPIT Campus", "Anand", "388001");
+        customer.setAddress(address);
+        System.out.println("Customer ID : " + customer.getCustomerId());
+        System.out.println("Name        : " + customer.getName());
+        System.out.println("Email       : " + customer.getEmail());
+        System.out.println("Mobile      : " + customer.getMobile());
+        System.out.println("Address     : " + customer.getAddress().getFullAddress());
+
+        // Clone test
+        Customer clonedCustomer = customer.clone();
+        System.out.println("\n===== CLONE TEST =====");
+        System.out.println("Original Customer ID : " + customer.getCustomerId());
+        System.out.println("Cloned Customer ID   : " + clonedCustomer.getCustomerId());
+        System.out.println("Is clone a different object? " + (customer != clonedCustomer));
+        // Put test accounts into account array
+        accounts[accountCount++] = account1;
+        accounts[accountCount++] = account2;
+
+        // ==========================================
+        // MiniBank
+        // ==========================================
+
+        
+
+        while (running) {
             System.out.println("\n===== MINI BANK MENU =====");
             System.out.println("1. Open Account");
             System.out.println("2. Deposit");
@@ -43,14 +96,12 @@ public class MiniBank {
             System.out.println("4. Transfer");
             System.out.println("5. Show Account Details");
             System.out.println("6. Exit");
-
             System.out.print("Enter Choice : ");
 
             int choice = sc.nextInt();
             sc.nextLine();
 
             MenuOption option = switch (choice) {
-
                 case 1 -> MenuOption.OPEN_ACCOUNT;
                 case 2 -> MenuOption.DEPOSIT;
                 case 3 -> MenuOption.WITHDRAW;
@@ -171,20 +222,6 @@ public class MiniBank {
                 }
             }
         }
-    }
-
-    // Find account using account number
-    private static Account findAccount(
-            Account[] accounts,
-            int accountCount,
-            String accountNumber) {
-
-        for (int i = 0; i < accountCount; i++) {
-            if (accounts[i].getAccountNumber().equals(accountNumber)) {
-                return accounts[i];
-            }
-        }
-        return null;
     }
 
 }
