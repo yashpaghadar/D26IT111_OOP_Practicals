@@ -62,10 +62,7 @@ public class GuardedCalculator {
 
             } finally {
                 System.out.println("Attempt logged.");
-                System.out.println();
             }
         }
-
-        System.out.println("Valid calculation completed successfully.");
     }
 }

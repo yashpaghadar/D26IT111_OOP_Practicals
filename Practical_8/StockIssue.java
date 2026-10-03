@@ -32,7 +32,6 @@ class Warehouse {
         for (int i = 0; i < stock.length; i++) {
             if (stock[i][0].equals(item)) {
                 int available = Integer.parseInt(stock[i][1]);
-
                 
                 if (qty > available) {
                     int shortfall = qty - available;
@@ -73,6 +72,6 @@ public class StockIssue {
                 System.out.println(e.getMessage());
             }
         }
-        System.out.println("All requests processed.");
+        System.out.println("All requests processed successfully.");
     }
 }
