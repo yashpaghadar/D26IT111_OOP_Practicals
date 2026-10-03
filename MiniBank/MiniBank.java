@@ -2,8 +2,13 @@ package MiniBank;
 
 import java.util.Scanner;
 
+import MiniBank.exception.BankException;
+import MiniBank.exception.InsufficientFundsException;
+import MiniBank.exception.InvalidAmountException;
+
 import MiniBank.model.*;
 import MiniBank.util.StatementFormatter;
+
 // Record
 record BankInfo(String name, String branch) {
 }
@@ -158,9 +163,12 @@ public class MiniBank {
 
         // Account array
         Account[] accountTypes = { savings, current, fixedDeposit };
-        accounts[accountCount] = savings; accountCount++;
-        accounts[accountCount] = current; accountCount++;
-        accounts[accountCount] = fixedDeposit; accountCount++;
+        accounts[accountCount] = savings;
+        accountCount++;
+        accounts[accountCount] = current;
+        accountCount++;
+        accounts[accountCount] = fixedDeposit;
+        accountCount++;
         // Runtime polymorphism
         System.out.println("\n===== INTEREST RATE TEST =====");
         for (Account acc : accountTypes) {
@@ -215,44 +223,49 @@ public class MiniBank {
             switch (option) {
                 // 1. OPEN ACCOUNT
                 case OPEN_ACCOUNT -> {
-                    if (accountCount >= accounts.length) { 
-                        System.out.println( "Account limit reached!"); 
+                    if (accountCount >= accounts.length) {
+                        System.out.println("Account limit reached!");
                         break;
-                    } 
-                    System.out.print( "Enter Owner Name : "); 
-                    String ownerName = sc.nextLine(); 
-                    System.out.print( "Enter Opening Balance : "); 
-                    long openingBalance = sc.nextLong(); sc.nextLine(); 
-                    System.out.println( "\nSelect Account Type:"); 
-                    System.out.println( "1. Savings Account"); 
-                    System.out.println( "2. Current Account"); 
-                    System.out.println( "3. Fixed Deposit Account"); 
-                    System.out.print( "Enter Account Type : "); 
-                    int accountType = sc.nextInt(); 
-                    sc.nextLine(); 
-                    switch (accountType) { 
-                        case 1 -> { 
-                            System.out.print( "Enter Minimum Balance : "); 
-                            long minBalance = sc.nextLong(); sc.nextLine(); 
-                            accounts[accountCount] = new SavingsAccount( ownerName, openingBalance, minBalance);
-                        } 
-                        case 2 -> { 
-                            System.out.print( "Enter Overdraft Limit : "); 
-                            long overdraftLimit = sc.nextLong(); sc.nextLine(); 
-                            accounts[accountCount] = new CurrentAccount( ownerName, openingBalance, overdraftLimit); 
-                        } case 3 -> { 
-                            accounts[accountCount] = new FixedDepositAccount( ownerName, openingBalance); 
-                        } default -> { 
-                            System.out.println( "Invalid Account Type!"); 
-                            break; 
-                        } 
                     }
-                         
+                    System.out.print("Enter Owner Name : ");
+                    String ownerName = sc.nextLine();
+                    System.out.print("Enter Opening Balance : ");
+                    long openingBalance = sc.nextLong();
+                    sc.nextLine();
+                    System.out.println("\nSelect Account Type:");
+                    System.out.println("1. Savings Account");
+                    System.out.println("2. Current Account");
+                    System.out.println("3. Fixed Deposit Account");
+                    System.out.print("Enter Account Type : ");
+                    int accountType = sc.nextInt();
+                    sc.nextLine();
+                    switch (accountType) {
+                        case 1 -> {
+                            System.out.print("Enter Minimum Balance : ");
+                            long minBalance = sc.nextLong();
+                            sc.nextLine();
+                            accounts[accountCount] = new SavingsAccount(ownerName, openingBalance, minBalance);
+                        }
+                        case 2 -> {
+                            System.out.print("Enter Overdraft Limit : ");
+                            long overdraftLimit = sc.nextLong();
+                            sc.nextLine();
+                            accounts[accountCount] = new CurrentAccount(ownerName, openingBalance, overdraftLimit);
+                        }
+                        case 3 -> {
+                            accounts[accountCount] = new FixedDepositAccount(ownerName, openingBalance);
+                        }
+                        default -> {
+                            System.out.println("Invalid Account Type!");
+                            break;
+                        }
+                    }
+
                     if (accounts[accountCount] != null) {
-                        System.out.println( "\nAccount Created Successfully!"); 
-                        System.out.println( "Account Number : " + accounts[accountCount].getAccountNumber());
-                        accountCount++; 
-                    } 
+                        System.out.println("\nAccount Created Successfully!");
+                        System.out.println("Account Number : " + accounts[accountCount].getAccountNumber());
+                        accountCount++;
+                    }
                 }
 
                 // 2. DEPOSIT
@@ -274,10 +287,14 @@ public class MiniBank {
                     System.out.print("Enter Deposit Amount : ");
                     long amount = sc.nextLong();
                     sc.nextLine();
-                    account.deposit(amount);
+                    try {
+                        account.deposit(amount);
+                        System.out.println("Deposit successful.");
+                        System.out.println("Current Balance: " + account.getBalance());
 
-                    System.out.println("Amount Deposited Successfully!");
-                    System.out.println("Current Balance : " + account.getBalance());
+                    } catch (InvalidAmountException e) {
+                        System.out.println("Invalid Amount: " + e.getMessage());
+                    }
                 }
 
                 // 3. WITHDRAW
@@ -299,18 +316,66 @@ public class MiniBank {
                     long amount = sc.nextLong();
                     sc.nextLine();
 
-                    boolean success = account.withdraw(amount);
-                    if (success) {
-                        System.out.println("Amount Withdrawn Successfully!");
-                        System.out.println("Current Balance : " + account.getBalance());
-                    } else {
-                        System.out.println("Withdrawal Failed! Insufficient Balance.");
+                    try {
+                        boolean success = account.withdraw(amount);
+
+                        if (success) {
+                            System.out.println("Withdrawal successful.");
+                            System.out.println("Current Balance: " + account.getBalance());
+                        }
+
+                    } catch (InsufficientFundsException e) {
+                        System.out.println("Withdrawal failed: " + e.getMessage());
+                        System.out.println("Shortfall: " + e.getShortfall());
+
+                    } catch (InvalidAmountException e) {
+                        System.out.println("Invalid Amount: " + e.getMessage());
                     }
                 }
 
                 // 4. TRANSFER
                 case TRANSFER -> {
-                    System.out.println("Transfer - To be implemented in later lab.");
+                    if (accountCount < 2) {
+                        System.out.println("At least two accounts are required for transfer!");
+                        break;
+                    }
+
+                    System.out.print("Enter Source Account Number : ");
+                    String fromAccountNumber = sc.nextLine();
+                    Account fromAccount = findAccount(accounts, accountCount, fromAccountNumber);
+
+                    if (fromAccount == null) {
+                        System.out.println("Source account not found!");
+                        break;
+                    }
+
+                    System.out.print("Enter Destination Account Number : ");
+                    String toAccountNumber = sc.nextLine();
+                    Account toAccount = findAccount(accounts, accountCount, toAccountNumber);
+
+                    if (toAccount == null) {
+                        System.out.println("Destination account not found!");
+                        break;
+                    }
+
+                    System.out.print("Enter Transfer Amount : ");
+                    long amount = sc.nextLong();
+                    sc.nextLine();
+
+                    try {
+                        fromAccount.transfer(toAccount, amount);
+                        System.out.println("Transfer successful.");
+                        System.out.println("Source Account Balance: " + fromAccount.getBalance());
+                        System.out.println("Destination Account Balance: " + toAccount.getBalance());
+
+                    } catch (InsufficientFundsException e) {
+                        System.out.println("Transfer failed: Insufficient funds.");
+                        System.out.println("Shortfall: " + e.getShortfall());
+                    } catch (InvalidAmountException e) {
+                        System.out.println("Transfer failed: " + e.getMessage());
+                    } catch (BankException e) {
+                        System.out.println("Transfer failed: " + e.getMessage());
+                    }
                 }
 
                 // 5. SHOW ACCOUNT DETAILS
@@ -335,4 +400,5 @@ public class MiniBank {
                 }
             }
         }
-}}
+    }
+}
