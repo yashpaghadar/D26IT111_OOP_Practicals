@@ -152,40 +152,74 @@ public class MiniBank {
          * System.out.println(StatementFormatter.buildStatement(testAccount));
          */
 
-        // ==========================================
-        // PRACTICAL 5 TESTING
-        // ==========================================
+        /*
+         * /
+         * // ==========================================
+         * // PRACTICAL 5 TESTING
+         * // ==========================================
+         * 
+         * // Create three different account types
+         * Account savings = new SavingsAccount("Yash", 5000, 1000);
+         * Account current = new CurrentAccount("Rahul", 10000, 5000);
+         * Account fixedDeposit = new FixedDepositAccount("Jay", 20000);
+         * 
+         * // Account array
+         * Account[] accountTypes = { savings, current, fixedDeposit };
+         * accounts[accountCount] = savings;
+         * accountCount++;
+         * accounts[accountCount] = current;
+         * accountCount++;
+         * accounts[accountCount] = fixedDeposit;
+         * accountCount++;
+         * // Runtime polymorphism
+         * System.out.println("\n===== INTEREST RATE TEST =====");
+         * for (Account acc : accountTypes) {
+         * System.out.println(acc.getOwnerName() + " -> Interest Rate: " +
+         * acc.interestRate() + "%");
+         * }
+         * 
+         * // instanceof pattern matching
+         * System.out.println("\n===== INSTANCEOF TEST =====");
+         * if (savings instanceof SavingsAccount sa) {
+         * System.out.println("Savings Account Minimum Balance: " + sa.getMinBalance());
+         * }
+         * 
+         * // Withdrawal rules
+         * System.out.println("\n===== WITHDRAWAL TEST =====");
+         * System.out.println("Savings withdraw 3000: " + savings.canWithdraw(3000));
+         * System.out.println("Current withdraw 14000: " + current.canWithdraw(14000));
+         * System.out.println("Fixed Deposit withdraw 1000: " +
+         * fixedDeposit.canWithdraw(1000));
+         */
 
-        // Create three different account types
-        Account savings = new SavingsAccount("Yash", 5000, 1000);
-        Account current = new CurrentAccount("Rahul", 10000, 5000);
-        Account fixedDeposit = new FixedDepositAccount("Jay", 20000);
+        // ================= PRACTICAL 9 - THREADING =================
 
-        // Account array
-        Account[] accountTypes = { savings, current, fixedDeposit };
-        accounts[accountCount] = savings;
-        accountCount++;
-        accounts[accountCount] = current;
-        accountCount++;
-        accounts[accountCount] = fixedDeposit;
-        accountCount++;
-        // Runtime polymorphism
-        System.out.println("\n===== INTEREST RATE TEST =====");
-        for (Account acc : accountTypes) {
-            System.out.println(acc.getOwnerName() + " -> Interest Rate: " + acc.interestRate() + "%");
+
+        // Create one account
+        Account threadAccount = new SavingsAccount("ThreadUser", 0, 100);
+        // Create 10 workers
+        Thread[] threads = new Thread[10];
+        for (int i = 0; i < threads.length; i++) {
+            AccountWorker worker = new AccountWorker(threadAccount, 1000, 10);
+            threads[i] = new Thread(worker, "Worker-" + (i + 1));
+            System.out.println(threads[i].getName() + " created.");
+            threads[i].start();
         }
 
-        // instanceof pattern matching
-        System.out.println("\n===== INSTANCEOF TEST =====");
-        if (savings instanceof SavingsAccount sa) {
-            System.out.println("Savings Account Minimum Balance: " + sa.getMinBalance());
+        // Wait for all threads to finish
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Main thread interrupted.");
+            }
         }
 
-        // Withdrawal rules
-        System.out.println("\n===== WITHDRAWAL TEST =====");
-        System.out.println("Savings withdraw 3000: " + savings.canWithdraw(3000));
-        System.out.println("Current withdraw 14000: " + current.canWithdraw(14000));
-        System.out.println("Fixed Deposit withdraw 1000: " + fixedDeposit.canWithdraw(1000));
+        // Print final balance
+        System.out.println("\n===== RESULT =====");
+        System.out.println("Final Balance: " + threadAccount.getBalance());
+        System.out.println("Expected Balance: 100000");
 
         // ==========================================
         // MiniBank MENU
