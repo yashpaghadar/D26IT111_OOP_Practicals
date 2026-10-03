@@ -1,4 +1,4 @@
-package MiniBank;
+package MiniBank.util;
 import java.util.regex.Pattern;
 
 public class Validator {

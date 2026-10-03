@@ -1,4 +1,4 @@
-package MiniBank;
+package MiniBank.model;
 
 public class CurrentAccount extends Account {
     private long overdraftLimit;

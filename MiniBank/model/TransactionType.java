@@ -1,4 +1,4 @@
-package MiniBank;
+package MiniBank.model;
 
 public enum TransactionType {
     DEPOSIT,

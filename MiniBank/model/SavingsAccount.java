@@ -1,4 +1,4 @@
-package MiniBank;
+package MiniBank.model;
 
 public class SavingsAccount extends Account {
     private long minBalance;

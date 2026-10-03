@@ -1,4 +1,6 @@
-package MiniBank;
+package MiniBank.util;
+
+import MiniBank.model.Account;
 
 public class StatementFormatter {
 

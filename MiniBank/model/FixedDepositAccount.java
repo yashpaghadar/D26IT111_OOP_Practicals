@@ -1,4 +1,4 @@
-package MiniBank;
+package MiniBank.model;
 
 public class FixedDepositAccount extends Account {
     public FixedDepositAccount(String ownerName, long openingBalance) {

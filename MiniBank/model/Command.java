@@ -1,4 +1,4 @@
-package MiniBank;
+package MiniBank.model;
 
 public record Command(
         TransactionType type,

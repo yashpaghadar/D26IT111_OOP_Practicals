@@ -2,6 +2,8 @@ package MiniBank;
 
 import java.util.Scanner;
 
+import MiniBank.model.*;
+import MiniBank.util.StatementFormatter;
 // Record
 record BankInfo(String name, String branch) {
 }

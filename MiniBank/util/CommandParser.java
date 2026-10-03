@@ -1,4 +1,5 @@
-package MiniBank;
+package MiniBank.util;
+import MiniBank.model.*;
 
 public class CommandParser {
 
