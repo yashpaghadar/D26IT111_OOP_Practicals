@@ -2,12 +2,10 @@ package MiniBank;
 
 import java.util.Scanner;
 
-import MiniBank.exception.BankException;
-import MiniBank.exception.InsufficientFundsException;
-import MiniBank.exception.InvalidAmountException;
-
+import MiniBank.concurrency.*;
+import MiniBank.exception.*;
 import MiniBank.model.*;
-import MiniBank.util.StatementFormatter;
+import MiniBank.util.*;
 
 // Record
 record BankInfo(String name, String branch) {
@@ -15,7 +13,15 @@ record BankInfo(String name, String branch) {
 
 // Enum
 enum MenuOption {
-    OPEN_ACCOUNT, DEPOSIT, WITHDRAW, TRANSFER, SHOW_DETAILS, EXIT
+    OPEN_ACCOUNT,
+    DEPOSIT,
+    WITHDRAW,
+    TRANSFER,
+    SHOW_DETAILS,
+    EXECUTOR_TRANSACTIONS,
+    PRODUCER_CONSUMER,
+    DEADLOCK,
+    EXIT
 }
 
 public class MiniBank {
@@ -33,6 +39,71 @@ public class MiniBank {
         }
 
         return null;
+    }
+
+    private static void runTransactionProcessor(Account account) {
+        TransactionProcessor processor = new TransactionProcessor();
+
+        // Submit multiple deposit tasks
+        processor.submit(new DepositTask(account, 500));
+        processor.submit(new DepositTask(account, 1000));
+        processor.submit(new DepositTask(account, 1500));
+        processor.submit(new DepositTask(account, 2000));
+
+        // Submit multiple withdrawal tasks
+        processor.submit(new WithdrawTask(account, 300));
+        processor.submit(new WithdrawTask(account, 400));
+        processor.submit(new WithdrawTask(account, 500));
+        processor.submit(new WithdrawTask(account, 600));
+
+        // Wait for all tasks to complete
+        processor.stop();
+        System.out.println("\nFinal Account Details:");
+        System.out.println(account);
+    }
+
+    private static void runProducerConsumer(Account account) throws InterruptedException {
+
+        TransactionBuffer buffer = new TransactionBuffer(3);
+        Runnable[] transactions = {
+                new DepositTask(account, 500),
+                new WithdrawTask(account, 200),
+                new DepositTask(account, 1000),
+                new WithdrawTask(account, 300),
+                new DepositTask(account, 1500),
+                new WithdrawTask(account, 400)
+        };
+
+        Thread producer = new Thread(new TransactionProducer(buffer, transactions), "Producer");
+        Thread consumer = new Thread(new TransactionConsumer(buffer, transactions.length), "Consumer");
+
+        producer.start();
+        consumer.start();
+        producer.join();
+        consumer.join();
+        System.out.println("\nProducer-Consumer completed.");
+    }
+
+    private static void demonstrateDeadlock(Account accountA, Account accountB) {
+
+        System.out.println("\n--- Deadlock Demonstration ---");
+        Thread thread1 = new Thread(new DeadlockTransfer(accountA, accountB, 100), "Deadlock-Thread-1");
+        Thread thread2 = new Thread(new DeadlockTransfer(accountB, accountA, 100), "Deadlock-Thread-2");
+
+        thread1.setDaemon(true);
+        thread2.setDaemon(true);
+        thread1.start();
+        thread2.start();
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        System.out.println("Thread-1 State: " + thread1.getState());
+        System.out.println("Thread-2 State: " + thread2.getState());
+        System.out.println("Deadlock demonstration completed.");
     }
 
     public static void main(String[] args) {
@@ -152,48 +223,47 @@ public class MiniBank {
          * System.out.println(StatementFormatter.buildStatement(testAccount));
          */
 
+        
+         
+        // ==========================================
+        // PRACTICAL 5 TESTING
+        // ==========================================
+         
+        // Create three different account types
+        Account savings = new SavingsAccount("Yash", 5000, 1000);
+        Account current = new CurrentAccount("Rahul", 10000, 5000);
+        Account fixedDeposit = new FixedDepositAccount("Jay", 20000);
+         
+        // Account array
+        Account[] accountTypes = { savings, current, fixedDeposit };
+        accounts[accountCount] = savings;
+        accountCount++;
+        accounts[accountCount] = current;
+        accountCount++;
+        accounts[accountCount] = fixedDeposit;
+        accountCount++;
+        // Runtime polymorphism
+        System.out.println("\n===== INTEREST RATE TEST =====");
+        for (Account acc : accountTypes) {
+            System.out.println(acc.getOwnerName() + " -> Interest Rate: " +
+            acc.interestRate() + "%");
+        }
+        
+        // instanceof pattern matching
+        System.out.println("\n===== INSTANCEOF TEST =====");
+        if (savings instanceof SavingsAccount sa) {
+            System.out.println("Savings Account Minimum Balance: " + sa.getMinBalance());
+        }
+        
+        // Withdrawal rules
+        System.out.println("\n===== WITHDRAWAL TEST =====");
+        System.out.println("Savings withdraw 3000: " + savings.canWithdraw(3000));
+        System.out.println("Current withdraw 14000: " + current.canWithdraw(14000));
+        System.out.println("Fixed Deposit withdraw 1000: " +
+        fixedDeposit.canWithdraw(1000));
+         
         /*
-         * /
-         * // ==========================================
-         * // PRACTICAL 5 TESTING
-         * // ==========================================
-         * 
-         * // Create three different account types
-         * Account savings = new SavingsAccount("Yash", 5000, 1000);
-         * Account current = new CurrentAccount("Rahul", 10000, 5000);
-         * Account fixedDeposit = new FixedDepositAccount("Jay", 20000);
-         * 
-         * // Account array
-         * Account[] accountTypes = { savings, current, fixedDeposit };
-         * accounts[accountCount] = savings;
-         * accountCount++;
-         * accounts[accountCount] = current;
-         * accountCount++;
-         * accounts[accountCount] = fixedDeposit;
-         * accountCount++;
-         * // Runtime polymorphism
-         * System.out.println("\n===== INTEREST RATE TEST =====");
-         * for (Account acc : accountTypes) {
-         * System.out.println(acc.getOwnerName() + " -> Interest Rate: " +
-         * acc.interestRate() + "%");
-         * }
-         * 
-         * // instanceof pattern matching
-         * System.out.println("\n===== INSTANCEOF TEST =====");
-         * if (savings instanceof SavingsAccount sa) {
-         * System.out.println("Savings Account Minimum Balance: " + sa.getMinBalance());
-         * }
-         * 
-         * // Withdrawal rules
-         * System.out.println("\n===== WITHDRAWAL TEST =====");
-         * System.out.println("Savings withdraw 3000: " + savings.canWithdraw(3000));
-         * System.out.println("Current withdraw 14000: " + current.canWithdraw(14000));
-         * System.out.println("Fixed Deposit withdraw 1000: " +
-         * fixedDeposit.canWithdraw(1000));
-         */
-
         // ================= PRACTICAL 9 - THREADING =================
-
 
         // Create one account
         Account threadAccount = new SavingsAccount("ThreadUser", 0, 100);
@@ -215,11 +285,12 @@ public class MiniBank {
                 System.out.println("Main thread interrupted.");
             }
         }
-
+        
         // Print final balance
         System.out.println("\n===== RESULT =====");
         System.out.println("Final Balance: " + threadAccount.getBalance());
         System.out.println("Expected Balance: 100000");
+        */
 
         // ==========================================
         // MiniBank MENU
@@ -232,7 +303,10 @@ public class MiniBank {
             System.out.println("3. Withdraw");
             System.out.println("4. Transfer");
             System.out.println("5. Show Account Details");
-            System.out.println("6. Exit");
+            System.out.println("6. ExecutorService Transactions");
+            System.out.println("7. Producer-Consumer");
+            System.out.println("8. Deadlock Demonstration");
+            System.out.println("0. Exit");
             System.out.print("Enter Choice : ");
 
             int choice = sc.nextInt();
@@ -244,8 +318,10 @@ public class MiniBank {
                 case 3 -> MenuOption.WITHDRAW;
                 case 4 -> MenuOption.TRANSFER;
                 case 5 -> MenuOption.SHOW_DETAILS;
-                case 6 -> MenuOption.EXIT;
-
+                case 6 -> MenuOption.EXECUTOR_TRANSACTIONS;
+                case 7 -> MenuOption.PRODUCER_CONSUMER;
+                case 8 -> MenuOption.DEADLOCK;
+                case 0 -> MenuOption.EXIT;
                 default -> null;
             };
 
@@ -427,7 +503,46 @@ public class MiniBank {
                     running = false;
                 }
 
-                // 6. EXIT
+                case EXECUTOR_TRANSACTIONS -> {
+                    if (accountCount == 0) {
+                        System.out.println("No accounts available!");
+                        break;
+                    }
+
+                    Account account = accounts[0];
+                    System.out.println("\n===== EXECUTOR SERVICE TEST =====");
+                    System.out.println("Using Account: " + account.getAccountNumber());
+                    runTransactionProcessor(account);
+                }
+
+                case PRODUCER_CONSUMER -> {
+                    if (accountCount == 0) {
+                        System.out.println("No accounts available!");
+                        break;
+                    }
+
+                    Account account = accounts[0];
+                    System.out.println("\n===== PRODUCER-CONSUMER TEST =====");
+                    try {
+                        runProducerConsumer(account);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        System.out.println("Producer-consumer interrupted.");
+                    }
+                }
+
+                case DEADLOCK -> {
+                    if (accountCount < 2) {
+                        System.out.println("At least two accounts are required!");
+                        break;
+                    }
+
+                    Account accountA = accounts[0];
+                    Account accountB = accounts[1];
+                    demonstrateDeadlock(accountA, accountB);
+                }
+
+                // 0. EXIT
                 case EXIT -> {
                     System.out.println("Thank You for using MiniBank.");
                     running = false;

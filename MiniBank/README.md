@@ -246,6 +246,8 @@ Interest Rate: 7.0%
 Withdrawal: Not allowed
 ```
 
+
+
 ---
 
 ## 💻 Running the Project
@@ -275,7 +277,10 @@ java MiniBank.MiniBank
 3. Withdraw
 4. Transfer
 5. Show Account Details
-6. Exit
+6. ExecutorService Transactions
+7. Producer-Consumer
+8. Deadlock Demonstration
+0. Exit
 ```
 
 The exact menu may evolve as additional practical requirements are integrated into the project.
@@ -349,8 +354,7 @@ The project focuses on understanding **how OOP concepts work together in a real-
 
 **Yash K. Paghadar**
 
-Information Technology Student
-
+IT Student | CSPIT | CHARUSAT
 ---
 
 ⭐ If you find this project useful, feel free to **star the repository**.
