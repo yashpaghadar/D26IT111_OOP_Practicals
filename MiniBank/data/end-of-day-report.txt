@@ -1,0 +1,6 @@
+========== MINI BANK END-OF-DAY REPORT ==========
+Generated At: 2026-10-12T21:57:58.767639700
+Total Transactions: 4
+Total Deposits: 260000
+Total Withdrawals: 4000
+Net Transaction Amount: 256000

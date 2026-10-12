@@ -6,6 +6,11 @@ import MiniBank.concurrency.*;
 import MiniBank.exception.*;
 import MiniBank.model.*;
 import MiniBank.util.*;
+import java.io.*;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 
 // Record
 record BankInfo(String name, String branch) {
@@ -21,10 +26,63 @@ enum MenuOption {
     EXECUTOR_TRANSACTIONS,
     PRODUCER_CONSUMER,
     DEADLOCK,
+    SAVE_ACCOUNTS,
+    GENERATE_REPORT,
     EXIT
 }
 
 public class MiniBank {
+    private static final Path DATA_DIR = Paths.get("MiniBank", "data");
+    private static final Path ACCOUNT_FILE = DATA_DIR.resolve("accounts.dat");
+    private static final Path LOG_DIR = DATA_DIR.resolve("logs");
+    private static final Path TRANSACTION_FILE = LOG_DIR.resolve("transactions.txt");
+    private static final Path REPORT_FILE = DATA_DIR.resolve("end-of-day-report.txt");
+
+    // Save accounts using Java Serialization
+    private static void saveAccounts(Account[] accounts, int accountCount) {
+        try {
+            Files.createDirectories(DATA_DIR);
+            Account[] savedAccounts = Arrays.copyOf(accounts, accountCount);
+            try (ObjectOutputStream out = new ObjectOutputStream(Files.newOutputStream(ACCOUNT_FILE))) {
+                out.writeObject(savedAccounts);
+            }
+            System.out.println("Accounts saved successfully to " + ACCOUNT_FILE);
+        } catch (IOException e) {
+            System.out.println("Error saving accounts: " + e.getMessage());
+        }
+    }
+
+    // Load accounts using Java Deserialization
+    private static Account[] loadAccounts() {
+        if (!Files.exists(ACCOUNT_FILE)) {
+            System.out.println("No saved account file found.");
+            return new Account[0];
+        }
+        try (ObjectInputStream in = new ObjectInputStream(Files.newInputStream(ACCOUNT_FILE))) {
+            Object data = in.readObject();
+            if (data instanceof Account[] loadedAccounts) {
+                System.out.println("Accounts loaded successfully.");
+                return loadedAccounts;
+            }
+            System.out.println("Invalid account data.");
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error loading accounts: " + e.getMessage());
+        }
+        return new Account[0];
+    }
+
+    // Append a transaction without overwriting previous records
+    private static void appendTransaction(String type, String accountNumber, long amount) {
+        try {
+            Files.createDirectories(LOG_DIR);
+            String record = type + "|" + accountNumber + "|" + amount + "|" + LocalDateTime.now()
+                    + System.lineSeparator();
+            Files.writeString(TRANSACTION_FILE, record,
+                    StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            System.out.println("Error writing transaction log: " + e.getMessage());
+        }
+    }
 
     // Find account using account number
     private static Account findAccount(
@@ -104,6 +162,57 @@ public class MiniBank {
         System.out.println("Thread-1 State: " + thread1.getState());
         System.out.println("Thread-2 State: " + thread2.getState());
         System.out.println("Deadlock demonstration completed.");
+    }
+
+    private static void generateReport() {
+        long totalDeposits = 0;
+        long totalWithdrawals = 0;
+        int transactionCount = 0;
+        try {
+            Files.createDirectories(DATA_DIR);
+            Files.createDirectories(LOG_DIR);
+            try (DirectoryStream<Path> files = Files.newDirectoryStream(LOG_DIR, "*.txt")) {
+                for (Path file : files) {
+                    BasicFileAttributes attributes = Files.readAttributes(file, BasicFileAttributes.class);
+                    System.out.println("\nLog File: " + file.getFileName());
+                    System.out.println("File Size: " + attributes.size() + " bytes");
+                    System.out.println("Last Modified: " + attributes.lastModifiedTime());
+                    try (BufferedReader reader = Files.newBufferedReader(file)) {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            String[] parts = line.split("\\|", 4);
+                            if (parts.length < 3) {
+                                continue;
+                            }
+                            try {
+                                long amount = Long.parseLong(parts[2]);
+                                if ("DEPOSIT".equals(parts[0])) {
+                                    totalDeposits += amount;
+                                    transactionCount++;
+                                } else if ("WITHDRAW".equals(parts[0])) {
+                                    totalWithdrawals += amount;
+                                    transactionCount++;
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Skipping invalid transaction: " + line);
+                            }
+                        }
+                    }
+                }
+            }
+            String report = "========== MINI BANK END-OF-DAY REPORT ==========\n"
+                    + "Generated At: " + LocalDateTime.now() + "\n"
+                    + "Total Transactions: " + transactionCount + "\n"
+                    + "Total Deposits: " + totalDeposits + "\n"
+                    + "Total Withdrawals: " + totalWithdrawals + "\n"
+                    + "Net Transaction Amount: " + (totalDeposits - totalWithdrawals) + "\n";
+            Files.writeString(REPORT_FILE, report,
+                    StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+            System.out.println("\n" + report);
+            System.out.println("Report saved to " + REPORT_FILE);
+        } catch (IOException e) {
+            System.out.println("Error generating report: " + e.getMessage());
+        }
     }
 
     public static void main(String[] args) {
@@ -223,17 +332,15 @@ public class MiniBank {
          * System.out.println(StatementFormatter.buildStatement(testAccount));
          */
 
-        
-         
         // ==========================================
         // PRACTICAL 5 TESTING
         // ==========================================
-         
+
         // Create three different account types
         Account savings = new SavingsAccount("Yash", 5000, 1000);
         Account current = new CurrentAccount("Rahul", 10000, 5000);
         Account fixedDeposit = new FixedDepositAccount("Jay", 20000);
-         
+
         // Account array
         Account[] accountTypes = { savings, current, fixedDeposit };
         accounts[accountCount] = savings;
@@ -246,51 +353,51 @@ public class MiniBank {
         System.out.println("\n===== INTEREST RATE TEST =====");
         for (Account acc : accountTypes) {
             System.out.println(acc.getOwnerName() + " -> Interest Rate: " +
-            acc.interestRate() + "%");
+                    acc.interestRate() + "%");
         }
-        
+
         // instanceof pattern matching
         System.out.println("\n===== INSTANCEOF TEST =====");
         if (savings instanceof SavingsAccount sa) {
             System.out.println("Savings Account Minimum Balance: " + sa.getMinBalance());
         }
-        
+
         // Withdrawal rules
         System.out.println("\n===== WITHDRAWAL TEST =====");
         System.out.println("Savings withdraw 3000: " + savings.canWithdraw(3000));
         System.out.println("Current withdraw 14000: " + current.canWithdraw(14000));
         System.out.println("Fixed Deposit withdraw 1000: " +
-        fixedDeposit.canWithdraw(1000));
-         
+                fixedDeposit.canWithdraw(1000));
+
         /*
-        // ================= PRACTICAL 9 - THREADING =================
-
-        // Create one account
-        Account threadAccount = new SavingsAccount("ThreadUser", 0, 100);
-        // Create 10 workers
-        Thread[] threads = new Thread[10];
-        for (int i = 0; i < threads.length; i++) {
-            AccountWorker worker = new AccountWorker(threadAccount, 1000, 10);
-            threads[i] = new Thread(worker, "Worker-" + (i + 1));
-            System.out.println(threads[i].getName() + " created.");
-            threads[i].start();
-        }
-
-        // Wait for all threads to finish
-        for (Thread thread : threads) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.out.println("Main thread interrupted.");
-            }
-        }
-        
-        // Print final balance
-        System.out.println("\n===== RESULT =====");
-        System.out.println("Final Balance: " + threadAccount.getBalance());
-        System.out.println("Expected Balance: 100000");
-        */
+         * // ================= PRACTICAL 9 - THREADING =================
+         * 
+         * // Create one account
+         * Account threadAccount = new SavingsAccount("ThreadUser", 0, 100);
+         * // Create 10 workers
+         * Thread[] threads = new Thread[10];
+         * for (int i = 0; i < threads.length; i++) {
+         * AccountWorker worker = new AccountWorker(threadAccount, 1000, 10);
+         * threads[i] = new Thread(worker, "Worker-" + (i + 1));
+         * System.out.println(threads[i].getName() + " created.");
+         * threads[i].start();
+         * }
+         * 
+         * // Wait for all threads to finish
+         * for (Thread thread : threads) {
+         * try {
+         * thread.join();
+         * } catch (InterruptedException e) {
+         * Thread.currentThread().interrupt();
+         * System.out.println("Main thread interrupted.");
+         * }
+         * }
+         * 
+         * // Print final balance
+         * System.out.println("\n===== RESULT =====");
+         * System.out.println("Final Balance: " + threadAccount.getBalance());
+         * System.out.println("Expected Balance: 100000");
+         */
 
         // ==========================================
         // MiniBank MENU
@@ -306,6 +413,8 @@ public class MiniBank {
             System.out.println("6. ExecutorService Transactions");
             System.out.println("7. Producer-Consumer");
             System.out.println("8. Deadlock Demonstration");
+            System.out.println("9. Save and Reload Accounts");
+            System.out.println("10. Generate End-of-Day Report");
             System.out.println("0. Exit");
             System.out.print("Enter Choice : ");
 
@@ -321,6 +430,8 @@ public class MiniBank {
                 case 6 -> MenuOption.EXECUTOR_TRANSACTIONS;
                 case 7 -> MenuOption.PRODUCER_CONSUMER;
                 case 8 -> MenuOption.DEADLOCK;
+                case 9 -> MenuOption.SAVE_ACCOUNTS;
+                case 10 -> MenuOption.GENERATE_REPORT;
                 case 0 -> MenuOption.EXIT;
                 default -> null;
             };
@@ -399,6 +510,7 @@ public class MiniBank {
                     sc.nextLine();
                     try {
                         account.deposit(amount);
+                        appendTransaction("DEPOSIT", account.getAccountNumber(), amount);
                         System.out.println("Deposit successful.");
                         System.out.println("Current Balance: " + account.getBalance());
 
@@ -430,6 +542,7 @@ public class MiniBank {
                         boolean success = account.withdraw(amount);
 
                         if (success) {
+                            appendTransaction("WITHDRAW", account.getAccountNumber(), amount);
                             System.out.println("Withdrawal successful.");
                             System.out.println("Current Balance: " + account.getBalance());
                         }
@@ -500,7 +613,6 @@ public class MiniBank {
                         Account account = accounts[i];
                         System.out.println(StatementFormatter.buildStatement(account));
                     }
-                    running = false;
                 }
 
                 case EXECUTOR_TRANSACTIONS -> {
@@ -542,8 +654,25 @@ public class MiniBank {
                     demonstrateDeadlock(accountA, accountB);
                 }
 
-                // 0. EXIT
+                case SAVE_ACCOUNTS -> {
+                    saveAccounts(accounts, accountCount);
+                    Account[] loadedAccounts = loadAccounts();
+                    System.out.println("\n===== RELOADED ACCOUNT DETAILS =====");
+                    for (Account account : loadedAccounts) {
+                        System.out.println(account);
+                    }
+                    System.out.println("Original Account Count: " + accountCount);
+                    System.out.println("Reloaded Account Count: " + loadedAccounts.length);
+                }
+
+                case GENERATE_REPORT -> {
+                    generateReport();
+                    running = false;
+                }
+                
+                    // 0. EXIT
                 case EXIT -> {
+                    saveAccounts(accounts, accountCount);
                     System.out.println("Thank You for using MiniBank.");
                     running = false;
                 }

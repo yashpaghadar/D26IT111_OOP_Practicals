@@ -32,7 +32,7 @@ The project progressively incorporates:
 * Polymorphism
 * Interfaces
 * Records
-* Enums
+* Enums 
 * Exception Handling
 * Validation
 * Multithreading

@@ -4,8 +4,10 @@ import MiniBank.exception.BankException;
 import MiniBank.exception.InsufficientFundsException;
 import MiniBank.exception.InvalidAmountException;
 import MiniBank.exception.AccountNotFoundException;
+import java.io.Serializable;
 
-public abstract class Account implements Transactable, InterestBearing {
+public abstract class Account implements Transactable, InterestBearing, Serializable {
+    private static final long serialVersionUID = 1L;
     private final String accountNumber;
     private String ownerName;
     private long balance;

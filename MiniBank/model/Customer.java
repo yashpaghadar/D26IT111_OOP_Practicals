@@ -1,6 +1,8 @@
 package MiniBank.model;
+import java.io.Serializable;
 
-public class Customer implements Cloneable {
+public class Customer implements Cloneable, Serializable {
+    private static final long serialVersionUID = 1L;
     private String name;
     private String email;
     private String mobile;
@@ -32,7 +34,8 @@ public class Customer implements Cloneable {
     }
 
     public Address getAddress() { return address; }
-    public static class Address {
+    public static class Address implements Serializable  {
+        private static final long serialVersionUID = 1L;
         private String line;
         private String city;
         private String pincode;
