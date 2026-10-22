@@ -1,5 +1,6 @@
 package MiniBank.model;
 
+import MiniBank.annotations.Id;
 import MiniBank.exception.AccountNotFoundException;
 import MiniBank.exception.BankException;
 import MiniBank.exception.InsufficientFundsException;
@@ -9,6 +10,7 @@ import java.io.Serializable;
 public abstract class Account implements Comparable<Account>, Transactable, InterestBearing, Serializable {
 
     private static final long serialVersionUID = 1L;
+    @Id
     private final String accountNumber;
     private String ownerName;
     private long balance;

@@ -4,6 +4,7 @@ import MiniBank.concurrency.*;
 import MiniBank.exception.*;
 import MiniBank.model.*;
 import MiniBank.store.AccountStore;
+import MiniBank.store.Repository;
 import MiniBank.util.*;
 import java.io.*;
 import java.nio.file.*;
@@ -14,6 +15,7 @@ import java.util.Scanner;
 
 // Record
 record BankInfo(String name, String branch) {
+
 }
 
 // Enum
@@ -33,6 +35,7 @@ enum MenuOption {
 }
 
 public class MiniBank {
+
     private static final Path DATA_DIR = Paths.get("MiniBank", "data");
     private static final Path ACCOUNT_FILE = DATA_DIR.resolve("accounts.dat");
     private static final Path LOG_DIR = DATA_DIR.resolve("logs");
@@ -127,12 +130,12 @@ public class MiniBank {
 
         TransactionBuffer buffer = new TransactionBuffer(3);
         Runnable[] transactions = {
-                new DepositTask(account, 500),
-                new WithdrawTask(account, 200),
-                new DepositTask(account, 1000),
-                new WithdrawTask(account, 300),
-                new DepositTask(account, 1500),
-                new WithdrawTask(account, 400)
+            new DepositTask(account, 500),
+            new WithdrawTask(account, 200),
+            new DepositTask(account, 1000),
+            new WithdrawTask(account, 300),
+            new DepositTask(account, 1500),
+            new WithdrawTask(account, 400)
         };
 
         Thread producer = new Thread(new TransactionProducer(buffer, transactions), "Producer");
@@ -294,7 +297,7 @@ public class MiniBank {
          * accounts[accountCount++] = account2;
          */
 
-        /*
+ /*
          * /
          * // ==========================================
          * // PRACTICAL 4 TEST
@@ -335,45 +338,40 @@ public class MiniBank {
          * Account testAccount = new SavingsAccount("Yash", 1000, 500);
          * System.out.println(StatementFormatter.buildStatement(testAccount));
          */
-
-        // ==========================================
-        // PRACTICAL 5 TESTING
-        // ==========================================
-
-        // Create three different account types
-        Account savings = new SavingsAccount("Yash", 5000, 1000);
-        Account current = new CurrentAccount("Rahul", 10000, 5000);
-        Account fixedDeposit = new FixedDepositAccount("Jay", 20000);
-
-        // Account array
-        Account[] accountTypes = { savings, current, fixedDeposit };
-        accounts[accountCount++] = savings;
-        accounts[accountCount++] = current;
-        accounts[accountCount++] = fixedDeposit;
-        accountStore.add(savings);
-        accountStore.add(current);
-        accountStore.add(fixedDeposit);
-        System.out.println("\n===== PRACTICAL 12: ACCOUNTS SORTED BY BALANCE =====");
-        accountStore.displayAccountsSortedByBalance();
-        // Runtime polymorphism
-        System.out.println("\n===== INTEREST RATE TEST =====");
-        for (Account acc : accountTypes) {
-            System.out.println(acc.getOwnerName() + " -> Interest Rate: " +
-                    acc.interestRate() + "%");
-        }
-
-        // instanceof pattern matching
-        System.out.println("\n===== INSTANCEOF TEST =====");
-        if (savings instanceof SavingsAccount sa) {
-            System.out.println("Savings Account Minimum Balance: " + sa.getMinBalance());
-        }
-
-        // Withdrawal rules
-        System.out.println("\n===== WITHDRAWAL TEST =====");
-        System.out.println("Savings withdraw 3000: " + savings.canWithdraw(3000));
-        System.out.println("Current withdraw 14000: " + current.canWithdraw(14000));
-        System.out.println("Fixed Deposit withdraw 1000: " +
-                fixedDeposit.canWithdraw(1000));
+        // // ==========================================
+        // // PRACTICAL 5 TESTING
+        // // ==========================================
+        // // Create three different account types
+        // Account savings = new SavingsAccount("Yash", 5000, 1000);
+        // Account current = new CurrentAccount("Rahul", 10000, 5000);
+        // Account fixedDeposit = new FixedDepositAccount("Jay", 20000);
+        // // Account array
+        // Account[] accountTypes = { savings, current, fixedDeposit };
+        // accounts[accountCount++] = savings;
+        // accounts[accountCount++] = current;
+        // accounts[accountCount++] = fixedDeposit;
+        // accountStore.add(savings);
+        // accountStore.add(current);
+        // accountStore.add(fixedDeposit);
+        // System.out.println("\n===== PRACTICAL 12: ACCOUNTS SORTED BY BALANCE =====");
+        // accountStore.displayAccountsSortedByBalance();
+        // // Runtime polymorphism
+        // System.out.println("\n===== INTEREST RATE TEST =====");
+        // for (Account acc : accountTypes) {
+        //     System.out.println(acc.getOwnerName() + " -> Interest Rate: " +
+        //             acc.interestRate() + "%");
+        // }
+        // // instanceof pattern matching
+        // System.out.println("\n===== INSTANCEOF TEST =====");
+        // if (savings instanceof SavingsAccount sa) {
+        //     System.out.println("Savings Account Minimum Balance: " + sa.getMinBalance());
+        // }
+        // // Withdrawal rules
+        // System.out.println("\n===== WITHDRAWAL TEST =====");
+        // System.out.println("Savings withdraw 3000: " + savings.canWithdraw(3000));
+        // System.out.println("Current withdraw 14000: " + current.canWithdraw(14000));
+        // System.out.println("Fixed Deposit withdraw 1000: " +
+        //         fixedDeposit.canWithdraw(1000));
 
         /*
          * // ================= PRACTICAL 9 - THREADING =================
@@ -404,11 +402,44 @@ public class MiniBank {
          * System.out.println("Final Balance: " + threadAccount.getBalance());
          * System.out.println("Expected Balance: 100000");
          */
+        // PRACTICAL 13: GENERIC REPOSITORY TEST
+        System.out.println("\n===== PRACTICAL 13: GENERIC REPOSITORY =====");
+
+        Repository<Account> accountRepository = new Repository<>();
+
+        Account repoAccount1 = new SavingsAccount("Yash", 5000, 1000);
+        Account repoAccount2 = new CurrentAccount("Rahul", 10000, 5000);
+        Account repoAccount3 = new FixedDepositAccount("Amit", 15000);
+
+        // Save multiple accounts
+        accountRepository.saveAll(repoAccount1, repoAccount2, repoAccount3);
+        System.out.println("Accounts saved successfully.");
+
+        // Find account by ID
+        String searchId = repoAccount1.getAccountNumber();
+        System.out.println("\n===== FIND ACCOUNT BY ID =====");
+        System.out.println("Searching for: " + searchId);
+        System.out.println("Found Account: " + accountRepository.findById(searchId));
+
+        // Display all accounts
+        System.out.println("\n===== ALL REPOSITORY ACCOUNTS =====");
+        for (Account account : accountRepository.findAll()) {
+            System.out.println(account);
+        }
+
+        // Test deletion
+        System.out.println("\n===== DELETE ACCOUNT =====");
+        System.out.println("Deleted: " + accountRepository.delete(repoAccount3.getAccountNumber()));
+        System.out.println("Remaining accounts: " + accountRepository.findAll().size());
+
+        // Test bounded generic method
+        Integer[] numbers = {10, 20, 30, 40, 50};
+        System.out.println("\n===== BOUNDED GENERIC METHOD =====");
+        System.out.println("Average: " + Repository.average(numbers));
 
         // ==========================================
         // MiniBank MENU
         // ==========================================
-
         while (running) {
             System.out.println("\n===== MINI BANK MENU =====");
             System.out.println("1. Open Account");
@@ -429,19 +460,32 @@ public class MiniBank {
             sc.nextLine();
 
             MenuOption option = switch (choice) {
-                case 1 -> MenuOption.OPEN_ACCOUNT;
-                case 2 -> MenuOption.DEPOSIT;
-                case 3 -> MenuOption.WITHDRAW;
-                case 4 -> MenuOption.TRANSFER;
-                case 5 -> MenuOption.SHOW_DETAILS;
-                case 6 -> MenuOption.EXECUTOR_TRANSACTIONS;
-                case 7 -> MenuOption.PRODUCER_CONSUMER;
-                case 8 -> MenuOption.DEADLOCK;
-                case 9 -> MenuOption.SAVE_ACCOUNTS;
-                case 10 -> MenuOption.GENERATE_REPORT;
-                case 11 -> MenuOption.SORT_ACCOUNTS;
-                case 0 -> MenuOption.EXIT;
-                default -> null;
+                case 1 ->
+                    MenuOption.OPEN_ACCOUNT;
+                case 2 ->
+                    MenuOption.DEPOSIT;
+                case 3 ->
+                    MenuOption.WITHDRAW;
+                case 4 ->
+                    MenuOption.TRANSFER;
+                case 5 ->
+                    MenuOption.SHOW_DETAILS;
+                case 6 ->
+                    MenuOption.EXECUTOR_TRANSACTIONS;
+                case 7 ->
+                    MenuOption.PRODUCER_CONSUMER;
+                case 8 ->
+                    MenuOption.DEADLOCK;
+                case 9 ->
+                    MenuOption.SAVE_ACCOUNTS;
+                case 10 ->
+                    MenuOption.GENERATE_REPORT;
+                case 11 ->
+                    MenuOption.SORT_ACCOUNTS;
+                case 0 ->
+                    MenuOption.EXIT;
+                default ->
+                    null;
             };
 
             if (option == null) {
@@ -696,7 +740,7 @@ public class MiniBank {
                     }
                 }
 
-                    // 0. EXIT
+                // 0. EXIT
                 case EXIT -> {
                     saveAccounts(accounts, accountCount);
                     System.out.println("Thank You for using MiniBank.");
