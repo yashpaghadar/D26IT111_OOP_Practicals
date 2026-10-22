@@ -22,7 +22,8 @@ class Student {
 }
 
 class ObjectMapper {
-    public static List<String> populate(Object object, String[] headers, String[] data) throws ReflectiveOperationException {
+    public static List<String> populate(Object object, String[] headers, String[] data) 
+                        throws ReflectiveOperationException {
         if (headers.length != data.length) {
             throw new IllegalArgumentException("Header and data lengths must match.");
         }
