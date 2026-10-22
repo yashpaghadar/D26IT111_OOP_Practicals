@@ -1,13 +1,12 @@
 DIRECTORY TREE REPORT
-Root: E:\SEM-3 CSPIT\OOP\Practicals\Practical_11\sample-folder
+Root: C:\Users\dell\Desktop\Yash\D26IT111_OOP_Practicals\Practical_11\sample-folder
 ==============================================
-[DIRECTORY] E:\SEM-3 CSPIT\OOP\Practicals\Practical_11\sample-folder
-[DIRECTORY] E:\SEM-3 CSPIT\OOP\Practicals\Practical_11\sample-folder\documents
-[FILE] data.txt | Size: 26 bytes | Modified: 12-10-2026 21:19:59
-[FILE] notes.txt | Size: 29 bytes | Modified: 12-10-2026 21:19:59
-[FILE] readme.txt | Size: 22 bytes | Modified: 12-10-2026 21:19:59
+[DIRECTORY] C:\Users\dell\Desktop\Yash\D26IT111_OOP_Practicals\Practical_11\sample-folder
+[DIRECTORY] C:\Users\dell\Desktop\Yash\D26IT111_OOP_Practicals\Practical_11\sample-folder\documents
+[FILE] data.txt | Size: 26 bytes | Modified: 22-10-2026 19:53:12
+[FILE] notes.txt | Size: 29 bytes | Modified: 22-10-2026 19:53:12
 
 =============== SUMMARY ===============
 Total directories: 2
-Total files: 3
-Total file size: 77 bytes
+Total files: 2
+Total file size: 55 bytes

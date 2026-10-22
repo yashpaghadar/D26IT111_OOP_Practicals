@@ -1,12 +1,13 @@
 package MiniBank.model;
 
+import MiniBank.exception.AccountNotFoundException;
 import MiniBank.exception.BankException;
 import MiniBank.exception.InsufficientFundsException;
 import MiniBank.exception.InvalidAmountException;
-import MiniBank.exception.AccountNotFoundException;
 import java.io.Serializable;
 
-public abstract class Account implements Transactable, InterestBearing, Serializable {
+public abstract class Account implements Comparable<Account>, Transactable, InterestBearing, Serializable {
+
     private static final long serialVersionUID = 1L;
     private final String accountNumber;
     private String ownerName;
@@ -50,6 +51,11 @@ public abstract class Account implements Transactable, InterestBearing, Serializ
         return active;
     }
 
+    @Override
+    public int compareTo(Account other) {
+        return this.getAccountNumber().compareTo(other.getAccountNumber());
+    }
+
     // Existing methods
     public void deposit(long amount) throws InvalidAmountException {
         if (amount <= 0) {
@@ -90,12 +96,12 @@ public abstract class Account implements Transactable, InterestBearing, Serializ
     }
 
     public String toString() {
-        return "Account{" +
-                "accountNumber='" + accountNumber + '\'' +
-                ", ownerName='" + ownerName + '\'' +
-                ", balance=" + balance +
-                ", active=" + active +
-                '}';
+        return "Account{"
+                + "accountNumber='" + accountNumber + '\''
+                + ", ownerName='" + ownerName + '\''
+                + ", balance=" + balance
+                + ", active=" + active
+                + '}';
     }
 
 }

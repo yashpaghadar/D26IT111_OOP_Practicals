@@ -1,16 +1,16 @@
 package MiniBank;
 
-import java.util.Scanner;
-
 import MiniBank.concurrency.*;
 import MiniBank.exception.*;
 import MiniBank.model.*;
+import MiniBank.store.AccountStore;
 import MiniBank.util.*;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Scanner;
 
 // Record
 record BankInfo(String name, String branch) {
@@ -28,6 +28,7 @@ enum MenuOption {
     DEADLOCK,
     SAVE_ACCOUNTS,
     GENERATE_REPORT,
+    SORT_ACCOUNTS,
     EXIT
 }
 
@@ -101,18 +102,20 @@ public class MiniBank {
 
     private static void runTransactionProcessor(Account account) {
         TransactionProcessor processor = new TransactionProcessor();
+        processor.addAccount(account);
+        Account sharedAccount = processor.getAccount(account.getAccountNumber());
 
-        // Submit multiple deposit tasks
-        processor.submit(new DepositTask(account, 500));
-        processor.submit(new DepositTask(account, 1000));
-        processor.submit(new DepositTask(account, 1500));
-        processor.submit(new DepositTask(account, 2000));
+        // Submit multiple deposit tasks using the account stored in ConcurrentHashMap
+        processor.submit(new DepositTask(sharedAccount, 500));
+        processor.submit(new DepositTask(sharedAccount, 1000));
+        processor.submit(new DepositTask(sharedAccount, 1500));
+        processor.submit(new DepositTask(sharedAccount, 2000));
 
         // Submit multiple withdrawal tasks
-        processor.submit(new WithdrawTask(account, 300));
-        processor.submit(new WithdrawTask(account, 400));
-        processor.submit(new WithdrawTask(account, 500));
-        processor.submit(new WithdrawTask(account, 600));
+        processor.submit(new WithdrawTask(sharedAccount, 300));
+        processor.submit(new WithdrawTask(sharedAccount, 400));
+        processor.submit(new WithdrawTask(sharedAccount, 500));
+        processor.submit(new WithdrawTask(sharedAccount, 600));
 
         // Wait for all tasks to complete
         processor.stop();
@@ -228,6 +231,7 @@ public class MiniBank {
 
         // Account array
         Account[] accounts = new Account[25];
+        AccountStore accountStore = new AccountStore();
         int accountCount = 0;
         boolean running = true;
 
@@ -343,12 +347,14 @@ public class MiniBank {
 
         // Account array
         Account[] accountTypes = { savings, current, fixedDeposit };
-        accounts[accountCount] = savings;
-        accountCount++;
-        accounts[accountCount] = current;
-        accountCount++;
-        accounts[accountCount] = fixedDeposit;
-        accountCount++;
+        accounts[accountCount++] = savings;
+        accounts[accountCount++] = current;
+        accounts[accountCount++] = fixedDeposit;
+        accountStore.add(savings);
+        accountStore.add(current);
+        accountStore.add(fixedDeposit);
+        System.out.println("\n===== PRACTICAL 12: ACCOUNTS SORTED BY BALANCE =====");
+        accountStore.displayAccountsSortedByBalance();
         // Runtime polymorphism
         System.out.println("\n===== INTEREST RATE TEST =====");
         for (Account acc : accountTypes) {
@@ -415,6 +421,7 @@ public class MiniBank {
             System.out.println("8. Deadlock Demonstration");
             System.out.println("9. Save and Reload Accounts");
             System.out.println("10. Generate End-of-Day Report");
+            System.out.println("11. Show Accounts Sorted by Balance");
             System.out.println("0. Exit");
             System.out.print("Enter Choice : ");
 
@@ -432,6 +439,7 @@ public class MiniBank {
                 case 8 -> MenuOption.DEADLOCK;
                 case 9 -> MenuOption.SAVE_ACCOUNTS;
                 case 10 -> MenuOption.GENERATE_REPORT;
+                case 11 -> MenuOption.SORT_ACCOUNTS;
                 case 0 -> MenuOption.EXIT;
                 default -> null;
             };
@@ -483,6 +491,7 @@ public class MiniBank {
                     }
 
                     if (accounts[accountCount] != null) {
+                        accountStore.add(accounts[accountCount]);
                         System.out.println("\nAccount Created Successfully!");
                         System.out.println("Account Number : " + accounts[accountCount].getAccountNumber());
                         accountCount++;
@@ -511,6 +520,7 @@ public class MiniBank {
                     try {
                         account.deposit(amount);
                         appendTransaction("DEPOSIT", account.getAccountNumber(), amount);
+                        accountStore.addTransaction("DEPOSIT | " + account.getAccountNumber() + " | " + amount + " | " + LocalDateTime.now());
                         System.out.println("Deposit successful.");
                         System.out.println("Current Balance: " + account.getBalance());
 
@@ -543,6 +553,7 @@ public class MiniBank {
 
                         if (success) {
                             appendTransaction("WITHDRAW", account.getAccountNumber(), amount);
+                            accountStore.addTransaction("WITHDRAW | " + account.getAccountNumber() + " | " + amount + " | " + LocalDateTime.now());
                             System.out.println("Withdrawal successful.");
                             System.out.println("Current Balance: " + account.getBalance());
                         }
@@ -587,6 +598,7 @@ public class MiniBank {
 
                     try {
                         fromAccount.transfer(toAccount, amount);
+                        accountStore.addTransaction("TRANSFER | " + fromAccount.getAccountNumber() + " -> " + toAccount.getAccountNumber() + " | " + amount + " | " + LocalDateTime.now());
                         System.out.println("Transfer successful.");
                         System.out.println("Source Account Balance: " + fromAccount.getBalance());
                         System.out.println("Destination Account Balance: " + toAccount.getBalance());
@@ -669,7 +681,21 @@ public class MiniBank {
                     generateReport();
                     running = false;
                 }
-                
+
+                case SORT_ACCOUNTS -> {
+                    System.out.println("\n===== ACCOUNTS SORTED BY BALANCE =====");
+                    accountStore.displayAccountsSortedByBalance();
+                    System.out.println("Total Accounts: " + accountStore.size());
+                    System.out.println("\n===== TRANSACTION HISTORY =====");
+                    if (accountStore.getTransactionHistory().isEmpty()) {
+                        System.out.println("No transactions recorded in this session.");
+                    } else {
+                        for (String transaction : accountStore.getTransactionHistory()) {
+                            System.out.println(transaction);
+                        }
+                    }
+                }
+
                     // 0. EXIT
                 case EXIT -> {
                     saveAccounts(accounts, accountCount);
