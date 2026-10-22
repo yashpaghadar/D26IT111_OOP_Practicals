@@ -3,6 +3,7 @@ package MiniBank;
 import MiniBank.concurrency.*;
 import MiniBank.exception.*;
 import MiniBank.model.*;
+import MiniBank.service.BankService;
 import MiniBank.store.AccountStore;
 import MiniBank.store.Repository;
 import MiniBank.util.*;
@@ -235,6 +236,8 @@ public class MiniBank {
         // Account array
         Account[] accounts = new Account[25];
         AccountStore accountStore = new AccountStore();
+        Repository<Account> repository = new Repository<>();
+        BankService bankService = new BankService(repository, accountStore);
         int accountCount = 0;
         boolean running = true;
 

@@ -1,42 +1,48 @@
-# 🏦 MiniBank
+# 🏦 MiniBank — Java Banking Application
 
 **MiniBank** is a Java-based console banking application developed as a semester project for the **Object-Oriented Programming (OOP)** course.
 
-The project demonstrates how core and advanced **Object-Oriented Programming concepts in Java** can be combined to build a structured banking application.
+The project demonstrates how fundamental and advanced Java concepts can be combined to develop a structured banking application. It progressively incorporates object-oriented programming, account management, exception handling, collections, generic repositories, transaction processing, multithreading, synchronization, persistence, and reporting.
+
+The application is developed for academic learning and demonstrates banking operations in a simplified environment.
 
 ---
 
 ## 📚 Project Information
 
-| Information          | Details                      |
-| -------------------- | ---------------------------- |
-| **Project Name**     | MiniBank                     |
-| **Course**           | Object-Oriented Programming  |
-| **Subject Code**     | CEUE203                      |
-| **Language**         | Java                         |
-| **IDE**              | Visual Studio Code           |
+| Information | Details |
+|---|---|
+| **Project Name** | MiniBank |
+| **Course** | Object-Oriented Programming |
+| **Subject Code** | CEUE203 |
+| **Language** | Java |
+| **IDE** | Visual Studio Code |
 | **Application Type** | Console-Based Banking System |
+| **Package Name** | `MiniBank` |
+| **Project Status** | Under Development |
 
 ---
 
-## 🎯 Objective
+## 🎯 Objectives
 
-The objective of MiniBank is to develop a simple banking system while applying the Object-Oriented Programming concepts learned throughout the semester.
+The main objective of MiniBank is to apply the concepts learned throughout the OOP course by developing a single banking application.
 
-The project progressively incorporates:
+The project demonstrates:
 
-* Classes and Objects
-* Encapsulation
-* Inheritance
-* Abstraction
-* Polymorphism
-* Interfaces
-* Records
-* Enums 
-* Exception Handling
-* Validation
-* Multithreading
-* Synchronization
+- Classes and objects
+- Encapsulation, inheritance, abstraction, and polymorphism
+- Interfaces, enums, and records
+- Collections Framework
+- Generic programming
+- Input validation
+- Custom exception handling
+- Banking transactions
+- Multithreading and synchronization
+- Concurrent transaction processing
+- File-based persistence
+- Transaction history and reporting
+- Repository and service-layer design
+- Unit testing and application packaging
 
 ---
 
@@ -44,146 +50,259 @@ The project progressively incorporates:
 
 ### 👤 Customer Management
 
-* Create customer records
-* Store customer information
-* Generate unique customer IDs
-* Store customer address information
+- Create and manage customer information.
+- Store customer details.
+- Generate customer identifiers.
+- Maintain customer address information where supported by the relevant classes.
 
 ### 🏦 Account Management
 
-The system supports different types of bank accounts:
+MiniBank supports three types of bank accounts:
 
-* Savings Account
-* Current Account
-* Fixed Deposit Account
+- **Savings Account**
+- **Current Account**
+- **Fixed Deposit Account**
 
-Each account type follows its own rules and behavior.
+Each account type implements its own interest-rate and withdrawal rules through inheritance and polymorphism.
 
 ### 💰 Banking Operations
 
-* Deposit money
-* Withdraw money
-* Transfer money
-* Display account information
-* Check account balance
+- Open a bank account.
+- Deposit money.
+- Withdraw money.
+- Transfer money between accounts.
+- Display account details.
+- Check account balances.
+- Generate account statements.
+- Display accounts sorted by balance.
 
-### 🔐 Validation
+### 🔐 Input Validation
 
-The project includes validation for:
+The application includes validation for:
 
-* Mobile numbers
-* Email addresses
-* PAN numbers
-* IFSC codes
-* Transaction amounts
-* Account numbers
+- Mobile numbers
+- Email addresses
+- PAN numbers
+- IFSC codes
+- Transaction amounts
+- Account-related information
+
+Validation helps prevent invalid input from being processed by the banking application.
 
 ### ⚠️ Exception Handling
 
-Custom exceptions are used for different banking errors, including:
+Custom exceptions are used to handle banking errors, including:
 
-* Account not found
-* Insufficient funds
-* Invalid amount
-* Other banking-related errors
+- Account not found
+- Insufficient funds
+- Invalid transaction amount
+- Other banking-related errors
 
-### 🧵 Multithreading
+This helps separate error handling from normal application execution.
 
-The project also demonstrates concurrent operations on a bank account.
+### 🗃️ Collections Framework
 
-It includes:
+The project uses Java collections to manage banking data and transaction history.
 
-* Multiple threads accessing the same account
-* Race-condition demonstration
-* Thread synchronization
-* Thread-safe deposit/withdraw operations
-* `join()` for waiting for threads to complete
+Examples include:
+
+- `HashMap` for account storage and lookup
+- `ArrayList` for transaction history
+- `Comparator` for sorting accounts
+- Collection-based processing of account records
+
+### 🧩 Generic Repository
+
+The project introduces a generic `Repository<T>` to demonstrate reusable data-access operations.
+
+The repository supports operations such as:
+
+- Saving objects
+- Finding objects by ID
+- Retrieving all stored objects
+- Deleting objects
+- Saving multiple objects
+- Calculating averages where applicable
+
+The repository uses the project's `@Id` annotation to identify objects by their IDs.
+
+### 🧵 Multithreading and Concurrency
+
+MiniBank includes demonstrations of concurrent banking operations.
+
+Features include:
+
+- Multiple threads accessing shared account data
+- Race-condition demonstrations
+- Synchronized account operations
+- Concurrent deposits and withdrawals
+- `Thread.join()` for coordinating thread execution
+- `ExecutorService` for managing transaction tasks
+- Producer-consumer demonstration
+- Deadlock demonstration
+- Transaction processing using `TransactionProcessor`
+
+These practicals help demonstrate the importance of thread safety when multiple operations access shared resources.
+
+### 💾 File-Based Persistence
+
+The application includes file-based account persistence.
+
+The existing implementation supports:
+
+- Saving account objects using Java serialization
+- Reloading previously saved account data
+- Storing account data under `MiniBank/data/`
+- Maintaining transaction logs
+
+The intended next improvement is to load persisted accounts automatically at application startup and save them automatically when the application exits.
+
+### 📊 Transaction History and Reporting
+
+The project includes transaction logging and end-of-day reporting.
+
+Current reporting functionality includes:
+
+- Recording transaction details
+- Maintaining transaction logs
+- Calculating deposit and withdrawal totals from logged transactions
+- Generating an end-of-day report
+- Saving the report to a file
+
+The project also includes account sorting by balance.
+
+### 🛠️ Service Layer — Practical 14
+
+The project is being extended with a `BankService` class to centralize banking operations.
+
+The intended service-layer responsibilities include:
+
+- Opening accounts
+- Depositing money
+- Withdrawing money
+- Transferring money
+- Generating account statements
+- Listing accounts
+- Integrating account validation and repository operations
+
+The current development stage includes the creation and successful compilation of `BankService.java`. Further integration with the existing menu and completion of the remaining Practical 14 requirements are still in progress.
 
 ---
 
 ## 🧱 Project Structure
 
+The following structure represents the main project organization. Additional classes and files may exist as the practicals progress.
+
 ```text
-MiniBank/
+D26IT111_OOP_Practicals/
 │
-├── README.md
-│
-├── MiniBank.java
-│
-├── model/
-│   ├── Account.java
-│   ├── Customer.java
-│   ├── SavingsAccount.java
-│   ├── CurrentAccount.java
-│   ├── FixedDepositAccount.java
-│   ├── Command.java
-│   ├── TransactionType.java
-│   ├── InterestBearing.java
-│   ├── Premium.java
-│   ├── Transactable.java
-│   └── ...
-│
-└── service/
-    ├── Validator.java
-    ├── WithdrawRule.java
-    └── ...
+└── MiniBank/
+    ├── README.md
+    ├── MiniBank.java
+    │
+    ├── model/
+    │   ├── Account.java
+    │   ├── Customer.java
+    │   ├── SavingsAccount.java
+    │   ├── CurrentAccount.java
+    │   ├── FixedDepositAccount.java
+    │   ├── Command.java
+    │   ├── TransactionType.java
+    │   ├── InterestBearing.java
+    │   ├── Transactable.java
+    │   ├── Premium.java
+    │   └── ...
+    │
+    ├── service/
+    │   └── BankService.java
+    │
+    ├── store/
+    │   ├── Repository.java
+    │   └── AccountStore.java
+    │
+    ├── concurrency/
+    │   ├── TransactionProcessor.java
+    │   ├── DepositTask.java
+    │   ├── WithdrawTask.java
+    │   └── ...
+    │
+    ├── util/
+    │   ├── Validator.java
+    │   ├── StatementFormatter.java
+    │   ├── WithdrawRule.java
+    │   └── ...
+    │
+    ├── exception/
+    │   ├── BankException.java
+    │   ├── AccountNotFoundException.java
+    │   ├── InsufficientFundsException.java
+    │   ├── InvalidAmountException.java
+    │   └── ...
+    │
+    └── data/
+        ├── accounts.dat
+        ├── logs/
+        │   └── transactions.txt
+        └── end-of-day-report.txt
 ```
+
+**Note:** The diagram is a documentation overview. Actual file names and locations should match the files present in your repository.
 
 ---
 
-## 🧩 OOP Concepts Demonstrated
+## 🧩 Object-Oriented Programming Concepts
 
 ### 1. Encapsulation
 
-Account and customer data are kept inside their respective classes and accessed through appropriate methods.
+Encapsulation protects an object's internal state by keeping fields private and providing appropriate methods for accessing or modifying them.
+
+For example, account information is managed through the `Account` class rather than by directly accessing its internal fields.
 
 ### 2. Inheritance
 
-Specialized account classes inherit common behavior from the base `Account` class.
+Inheritance allows specialized account classes to reuse common functionality from the base `Account` class.
 
 ```text
-              Account
-                 │
-       ┌─────────┼─────────┐
-       │         │         │
-   Savings    Current    FixedDeposit
-   Account    Account      Account
+                 Account
+                    |
+          +---------+---------+
+          |         |         |
+       Savings   Current   FixedDeposit
+       Account   Account      Account
 ```
 
 ### 3. Abstraction
 
-`Account` provides common account behavior while allowing individual account types to define their own rules.
+The abstract `Account` class defines common banking behavior while allowing individual account types to provide their own implementations of account-specific rules.
 
-For example:
+Examples include:
 
-* Interest rate
-* Withdrawal rules
+- Interest rates
+- Withdrawal eligibility
 
 ### 4. Polymorphism
 
-Different account types can be stored and processed using the common `Account` reference.
+Different account types can be referenced through the common `Account` type.
 
 ```java
 Account[] accounts;
 ```
 
-This allows the program to use dynamic method dispatch.
+This allows common operations to work with different account implementations through dynamic method dispatch.
 
 ### 5. Interfaces
 
-Interfaces such as:
+Interfaces define capabilities that can be implemented by appropriate classes.
 
-```text
-InterestBearing
-Transactable
-Premium
-```
+Examples include:
 
-are used to define common capabilities that can be implemented by appropriate classes.
+- `InterestBearing`
+- `Transactable`
+- `Premium`
 
 ### 6. Records
 
-Java records are used where immutable data structures are suitable.
+Java records provide a concise way to represent data-oriented objects.
 
 Example:
 
@@ -193,7 +312,7 @@ record Command(TransactionType type, String accountNumber, long amount) {}
 
 ### 7. Enums
 
-Enums are used to represent fixed sets of values.
+Enums represent a fixed set of named values.
 
 Example:
 
@@ -207,13 +326,25 @@ enum TransactionType {
 
 ### 8. Exception Handling
 
-Custom checked exceptions are used to handle banking errors in a structured way.
+Custom checked exceptions provide structured handling for banking errors such as insufficient funds, invalid amounts, and missing accounts.
 
-### 9. Multithreading
+### 9. Collections
 
-Multiple threads are used to simulate concurrent banking operations.
+Java collections support account storage, transaction history, searching, and sorting.
 
-Synchronization is then applied to prevent inconsistent account balances.
+The `AccountStore` class uses collections to organize accounts and record transaction history.
+
+### 10. Generics
+
+The generic `Repository<T>` demonstrates how a reusable class can perform common data-management operations on different object types.
+
+### 11. Multithreading and Synchronization
+
+Multithreading demonstrates concurrent task execution. Synchronization helps prevent race conditions when multiple threads modify shared account data.
+
+### 12. Service-Layer Design
+
+The `BankService` class is being introduced to separate banking operations from menu handling and improve the organization and maintainability of the application.
 
 ---
 
@@ -221,57 +352,93 @@ Synchronization is then applied to prevent inconsistent account balances.
 
 ### Savings Account
 
-The Savings Account maintains a minimum balance requirement.
+A Savings Account is intended for regular savings and follows its configured minimum-balance and withdrawal rules.
 
 ```text
 Interest Rate: 4.0%
-Withdrawal: Allowed while maintaining minimum balance
+Withdrawal: Subject to the account's minimum-balance rules
 ```
 
 ### Current Account
 
-The Current Account supports an overdraft limit.
+A Current Account supports transactions subject to its configured overdraft limit.
 
 ```text
 Interest Rate: 0%
-Withdrawal: Allowed up to the overdraft limit
+Withdrawal: Subject to the account's overdraft rules
 ```
 
 ### Fixed Deposit Account
 
-The Fixed Deposit Account provides interest but does not allow normal withdrawals.
+A Fixed Deposit Account provides interest according to its configured rate and withdrawal rules.
 
 ```text
 Interest Rate: 7.0%
-Withdrawal: Not allowed
+Withdrawal: Restricted according to the account implementation
 ```
 
-
+*The rates and account rules above describe the current project configuration and are not intended to represent actual bank products.*
 
 ---
 
-## 💻 Running the Project
+## 💻 Requirements
 
-The project uses Java packages, so it should be compiled and executed from the **parent directory** of the `MiniBank` package.
+Before running the application, ensure that you have:
 
-### Compile
+- Java Development Kit (JDK) installed
+- A terminal or command prompt
+- Visual Studio Code or another Java-compatible editor (optional)
 
-```bash
-javac MiniBank/MiniBank.java MiniBank/model/*.java MiniBank/service/*.java
+Verify Java installation:
+
+```powershell
+java -version
+javac -version
 ```
 
-### Run
+---
 
-```bash
+## 🚀 Running the Project
+
+Run the commands from the **parent directory** of the `MiniBank` package.
+
+For example, if your project is located at:
+
+```text
+D26IT111_OOP_Practicals/
+└── MiniBank/
+    └── MiniBank.java
+```
+
+Open PowerShell in `D26IT111_OOP_Practicals`.
+
+### Step 1: Compile All Java Files
+
+```powershell
+javac -d . (Get-ChildItem -Recurse -Filter *.java | ForEach-Object { $_.FullName })
+```
+
+This command compiles Java source files in the project and places generated `.class` files according to their package structure.
+
+### Step 2: Run MiniBank
+
+```powershell
 java MiniBank.MiniBank
 ```
 
+The application will display the bank information and interactive console menu.
+
 ---
 
-## 🖥️ Example Menu
+## 🖥️ Application Menu
+
+The current menu includes the following options:
 
 ```text
-========== MiniBank ==========
+======================================
+BankInfo[name=MiniBank, branch=Anand Branch]
+======================================
+
 1. Open Account
 2. Deposit
 3. Withdraw
@@ -280,73 +447,107 @@ java MiniBank.MiniBank
 6. ExecutorService Transactions
 7. Producer-Consumer
 8. Deadlock Demonstration
+9. Save and Reload Accounts
+10. Generate End-of-Day Report
+11. Show Accounts Sorted by Balance
 0. Exit
 ```
 
-The exact menu may evolve as additional practical requirements are integrated into the project.
+The menu may change as additional practical requirements are implemented.
 
 ---
 
-## 🧵 Multithreading Demonstration
+## 🧵 Concurrency Demonstrations
 
-One of the later stages of the project demonstrates what happens when multiple threads perform operations on the same bank account.
+### Concurrent Transactions
 
-Without synchronization:
+Multiple transaction tasks can operate on account data concurrently.
 
 ```text
-Thread 1 ──┐
-Thread 2 ──┤
-Thread 3 ──┤
-Thread 4 ──┤──> Shared Account
-Thread ... ─┤
-Thread 10 ──┘
+Transaction Task 1 ──┐
+Transaction Task 2 ──┤
+Transaction Task 3 ──┤
+Transaction Task 4 ──┼──> Shared Account Data
+Transaction Task ... ┤
+Transaction Task N ──┘
 ```
 
-Concurrent access can result in a **race condition**, where the final balance may not match the expected result.
+When multiple threads access shared mutable data, race conditions may occur if operations are not properly coordinated.
 
-Synchronization is then introduced so that critical account operations execute safely.
+Synchronization and thread-safe data structures are important for maintaining consistent results.
+
+### Producer-Consumer
+
+The producer-consumer demonstration illustrates coordination between tasks that generate work and tasks that consume it.
+
+### Deadlock Demonstration
+
+The deadlock demonstration illustrates how threads can become blocked while waiting for resources held by one another.
+
+These examples are included for educational purposes to demonstrate concurrency concepts.
+
+---
+
+## 💾 Data Storage
+
+MiniBank uses local files for account persistence and transaction-related information.
+
+| File or Directory | Purpose |
+|---|---|
+| `MiniBank/data/accounts.dat` | Serialized account data |
+| `MiniBank/data/logs/transactions.txt` | Transaction history |
+| `MiniBank/data/end-of-day-report.txt` | Generated end-of-day report |
+
+The files are created or updated by the relevant application operations.
+
+**Important:** This is an academic demonstration, not a production banking system. Java serialization and plain-text transaction logs should not be treated as secure storage for real financial information.
 
 ---
 
 ## 📈 Project Learning Progression
 
+The project has evolved through practical exercises that introduce Java and OOP concepts incrementally.
+
 ```text
-Basic Java
-    ↓
-Classes & Objects
-    ↓
-Constructors
-    ↓
-Encapsulation
-    ↓
-Inheritance
-    ↓
-Abstraction
-    ↓
-Polymorphism
-    ↓
-Interfaces
-    ↓
-Validation
-    ↓
-Custom Exceptions
-    ↓
-Transaction Processing
-    ↓
-Multithreading
-    ↓
-Synchronization
-    ↓
-MiniBank
+Basic Java Programming
+        ↓
+Classes and Objects
+        ↓
+Constructors and Encapsulation
+        ↓
+Inheritance and Abstraction
+        ↓
+Polymorphism and Interfaces
+        ↓
+Enums and Records
+        ↓
+Validation and Custom Exceptions
+        ↓
+Banking Operations
+        ↓
+Collections Framework
+        ↓
+Generic Repository
+        ↓
+Multithreading and Synchronization
+        ↓
+Concurrent Transaction Processing
+        ↓
+Persistence and Reporting
+        ↓
+Service-Layer Integration
+        ↓
+Testing and Packaging
 ```
 
----
 
 ## 🎓 Academic Purpose
 
-MiniBank was developed to apply the concepts taught throughout the **CEUE203 Object-Oriented Programming** course in a single practical application.
+MiniBank was developed as part of the **CEUE203 — Object-Oriented Programming** course at CSPIT, CHARUSAT.
 
-The project focuses on understanding **how OOP concepts work together in a real-world-style problem** rather than implementing a production banking system.
+The project demonstrates how Java concepts can be combined in a single application to model banking operations, organize code into reusable components, handle errors, and explore concurrent execution.
+
+The focus is on understanding and applying programming concepts rather than implementing a production-grade banking system.
 
 ---
 
@@ -354,7 +555,9 @@ The project focuses on understanding **how OOP concepts work together in a real-
 
 **Yash K. Paghadar**
 
-IT Student | CSPIT | CHARUSAT
+Information Technology Student  
+CSPIT — CHARUSAT
+
 ---
 
-⭐ If you find this project useful, feel free to **star the repository**.
+⭐ If you find this project useful, feel free to star the repository!
